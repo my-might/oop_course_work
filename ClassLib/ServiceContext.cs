@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace Classlib
+namespace ClassLib
 {
     public class ServiceContext : DbContext
     {
@@ -25,35 +25,22 @@ namespace Classlib
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Car>()
+                .HasOne(p => p.engine)
+                .WithMany(t => t.cars)
+                .HasForeignKey(p => p.engine_id)
+                .HasPrincipalKey(t=>t.id);
+
+            modelBuilder.Entity<Rent>()
+                .HasOne(p => p.car)
+                .WithMany(t => t.rents)
+                .HasForeignKey(p => p.car_id)
+                .HasPrincipalKey(t=>t.id);
+
+            modelBuilder.Entity<Rent>()
                 .HasOne(p => p.client)
-                .WithMany(t => t.reviews)
+                .WithMany(t => t.rents)
                 .HasForeignKey(p => p.client_id)
                 .HasPrincipalKey(t=>t.id);
-
-            modelBuilder.Entity<Review>()
-                .HasOne(p => p.garment)
-                .WithMany(t => t.reviews)
-                .HasForeignKey(p => p.garment_id)
-                .HasPrincipalKey(t=>t.id);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(p => p.client)
-                .WithMany(t => t.orders)
-                .HasForeignKey(p => p.client_id)
-                .HasPrincipalKey(t=>t.id);
-
-            modelBuilder.Entity<Garment>()
-                .HasMany(c => c.orders)
-                .WithMany(s => s.garments)
-                .UsingEntity<OrderItem>(
-                    j => j
-                    .HasOne(pt => pt.order)
-                    .WithMany(t => t.order_items)
-                    .HasForeignKey(pt => pt.order_id),
-                    j => j
-                    .HasOne(pt => pt.garment)
-                    .WithMany(p => p.order_items)
-                    .HasForeignKey(pt => pt.garment_id));
         }
     }
 }
