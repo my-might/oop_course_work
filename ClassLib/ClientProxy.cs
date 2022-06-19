@@ -1,34 +1,37 @@
 namespace ClassLib
 {
-    abstract public class ClientAbstract {
-        abstract public int Insert(Client client);
+    abstract public class UserAbstract {
+        abstract public int Insert(User client);
         abstract public void DeleteById(int id);
-        abstract public void Update(Client client);
-        abstract public Client GetById(int id);
+        abstract public void Update(User client);
+        abstract public User GetById(int id);
     }
-    public class ClientProxy : ClientAbstract
+    public class UserProxy : UserAbstract
     {
-        private ClientAbstract _clientRepo;
-        public ClientProxy(ServiceContext service) {
-            _clientRepo = new ClientRepo(service);
+        private UserAbstract _clientRepo;
+        public UserProxy(ServiceContext service) {
+            _clientRepo = new UserRepo(service);
         }
 
         public override void DeleteById(int id)
         {
-            throw new System.NotImplementedException();
+            if(GetById(id) != null)
+            {
+                DeleteById(id);
+            }
         }
 
-        public override Client GetById(int id)
+        public override User GetById(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        public override int Insert(Client client)
+        public override int Insert(User client)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void Update(Client client)
+        public override void Update(User client)
         {
             throw new System.NotImplementedException();
         }

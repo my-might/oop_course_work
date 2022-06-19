@@ -14,8 +14,8 @@ namespace App
         private TextField drLicenseNum;
         private TextField categories;
         private TextField login;
-        private Client clientToAdd;
-        private ClientProxy clientProxy;
+        private User clientToAdd;
+        private UserProxy clientProxy;
         public RegistrationDialog()
         {
             this.Title = "Registration";
@@ -102,14 +102,16 @@ namespace App
         }
         private void DialogSubmit()
         {
-            clientToAdd = new Client() {
+            clientToAdd = new User() {
                 fullname = fullname.Text.ToString(),
                 age = Int32.Parse(age.Text.ToString()),
                 email = email.Text.ToString(),
                 driver_license_num = drLicenseNum.Text.ToString(),
                 categories = categories.Text.ToString(),
                 login = login.Text.ToString(),
-                password = password.Text.ToString()
+                password = password.Text.ToString(),
+                vip = false,
+                isWorker = false
             };
             try
             {
@@ -123,11 +125,11 @@ namespace App
                 MessageBox.ErrorQuery("Error", ex.Message,  "OK");
             }
         }
-        public Client GetClient()
+        public User GetClient()
         {
             return this.clientToAdd;
         }
-        public void SetRepository(ClientProxy repo)
+        public void SetRepository(UserProxy repo)
         {
             this.clientProxy = repo;
         }

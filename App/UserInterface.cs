@@ -7,10 +7,7 @@ namespace App
     public class UserInterface
     {
         private static Service service;
-        private static Client client;
-        private static Worker worker;
-        
-        private static TextField idToShow;
+        private static UserState user;
         private static Toplevel top;
         
         public static void SetService(Service repo1)
@@ -21,19 +18,16 @@ namespace App
         {
             Application.Init();
             top = Application.Top;
-            ProcessRegistration();
+            ProcessMain();
         }
-        private static void OnQuit()
+        public static void ProcessMain()
         {
-            Application.RequestStop();
-        }
-        public static void ProcessRegistration()
-        {
+            user = new UserState(service);
             MenuBar menu = new MenuBar(new MenuBarItem[] {
                 new MenuBarItem ("_File", new MenuItem [] {
-                    new MenuItem ("_Sign in", "", SignIn),
-                    new MenuItem ("_Sign up", "", SignUp),
-                    new MenuItem ("_I'm worker", "", SignInWorker),
+                    new MenuItem ("_Sign in", "", user.SignIn),
+                    new MenuItem ("_Sign up", "", user.SignUp),
+                    new MenuItem ("_Log out", "", )
                     new MenuItem ("_Exit", "", OnQuit)
                 }),
                 new MenuBarItem ("_Help", new MenuItem [] {
@@ -41,41 +35,17 @@ namespace App
                 })
             });
             MainWindowUser userWin = new MainWindowUser();
-            userWin.SetService(repo);
-            userWin.SetUser(registered);
+            userWin.SetService(service);
+            userWin.SetUser(user);
             top.Add(userWin, menu);
             Application.Run();
         }
-        public static void SignUp()
+        private static void OnQuit()
         {
-            RegistrationDialog dialog = new RegistrationDialog();
-            dialog.SetRepository(service.clientProxy);
-            top.Add(dialog);
-            Application.Run(dialog);
-            if(!dialog.canceled)
-            {
-                client = dialog.GetClient();
-            }
+            Application.RequestStop();
         }
-        public static void SignIn()
-        {
-            LoginDialog dialog = new LoginDialog();
-            dialog.SetRepository(service.clientProxy);
-            Application.Run(dialog);
-            if(!dialog.canceled)
-            {
-                client = dialog.GetClient();
-            }
-        }
-        public static void SignInWorker()
-        {
-            LoginWorkerDialog dialog = new LoginWorkerDialog();
-            dialog.SetRepository(service.workerProxy);
-            Application.Run(dialog);
-            if(!dialog.canceled)
-            {
-                worker = dialog.GetWorker();
-            }
+        public static void Help() {
+
         }
     }
 }

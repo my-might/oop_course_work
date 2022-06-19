@@ -7,10 +7,10 @@ namespace App
     public class LoginDialog : Dialog
     {
         public bool canceled;
-        private Client loggedClient;
+        private User loggedClient;
         private TextField login;
         private TextField password;
-        private ClientProxy clientProxy;
+        private UserProxy clientProxy;
         public LoginDialog()
         {
             this.Title = "Sign in";
@@ -67,7 +67,7 @@ namespace App
                 MessageBox.ErrorQuery("Error", ex.Message,  "OK");
             }
         }
-        public Client GetClient()
+        public User GetClient()
         {
             return this.loggedClient;
         }
@@ -76,7 +76,7 @@ namespace App
             this.canceled = true;
             Application.RequestStop();
         }
-        public void SetRepository(ClientProxy repo)
+        public void SetRepository(UserProxy repo)
         {
             this.clientProxy = repo;
         }

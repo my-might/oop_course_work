@@ -4,22 +4,22 @@ using System.Linq;
 using System;
 namespace ClassLib
 {
-    public class ClientRepo : ClientAbstract
+    public class UserRepo : UserAbstract
     {
         private ServiceContext context;
-        public ClientRepo(ServiceContext context)
+        public UserRepo(ServiceContext context)
         {
             this.context = context;
         }
-        public override int Insert(Client client)
+        public override int Insert(User user)
         {
-            context.clients.Add(client);
+            context.users.Add(user);
             context.SaveChanges();
-            return client.id;
+            return user.id;
         }
-        public override void Update(Client client)
+        public override void Update(User client)
         {
-            var local = context.clients.Find(client.id);
+            var local = context.users.Find(client.id);
             if (local != null)
             {
                 context.Entry(local).State = EntityState.Detached;
@@ -29,12 +29,12 @@ namespace ClassLib
         }
         public override void DeleteById(int id)
         {
-            context.clients.Remove(context.clients.Find(id));
+            context.users.Remove(context.users.Find(id));
             context.SaveChanges();
         }
-        public override Client GetById(int id)
+        public override User GetById(int id)
         {
-            Client result = context.clients.Find(id);
+            User result = context.users.Find(id);
             return result;
         }
     }

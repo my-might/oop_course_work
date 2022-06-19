@@ -6,16 +6,14 @@ namespace ClassLib
     {
         public CarProxy carProxy;
         public RentProxy rentProxy;
-        public ClientProxy clientProxy;
-        public WorkerProxy workerProxy;
+        public UserProxy userProxy;
         private ServiceContext context;
         public Service()
         {
             CreateContext();
             this.carProxy = new CarProxy(context);
             this.rentProxy = new RentProxy(context);
-            this.clientProxy = new ClientProxy(context);
-            this.workerProxy = new WorkerProxy(context);
+            this.userProxy = new UserProxy(context);
         }
         public void CreateContext()
         {
