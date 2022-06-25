@@ -6,8 +6,9 @@ namespace App
 {
     public class ShowCarRents : Dialog
     {
-        private Service repo;
+        private Service service;
         private ListView allRents;
+        private UserState user;
         private int carId;
         public ShowCarRents()
         {
@@ -45,19 +46,20 @@ namespace App
                 return;
             }
             ShowRentDialog dialog = new ShowRentDialog();
-            dialog.SetRent(rent);
+            dialog.SetInfo(rent, service, user);
             Application.Run(dialog);
             ShowCurrentPage();
         }
-        public void SetRepository(Service repo, int carId)
+        public void SetInfo(UserState user, Service repo, int carId)
         {
-            this.repo = repo;
+            this.user = user;
+            this.service = repo;
             this.carId = carId;
             ShowCurrentPage();
         }
         private void ShowCurrentPage()
         {
-            List<Rent> rents = repo.reviewRepository.GetAllFilmReviews(filmId);
+            List<Rent> rents = service.rentProxy.GetByCarId(carId);
             if(rents.Count != 0)
             {
                 this.allRents.SetSource(rents);

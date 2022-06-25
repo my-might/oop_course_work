@@ -1,4 +1,5 @@
 ﻿using System;
+using ClassLib;
 
 namespace App
 {
@@ -6,7 +7,9 @@ namespace App
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Service service = new Service();
+            UserInterface.SetService(service);
+            UserInterface.ProcessApplication();
         }
     }
 }

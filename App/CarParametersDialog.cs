@@ -5,7 +5,7 @@ using ClassLib;
 
 namespace App
 {
-    public class CreateFilmDialog : Dialog
+    public class CarParametersDialog : Dialog
     {
         public bool canceled;
         protected Service service;
@@ -13,11 +13,12 @@ namespace App
         protected ComboBox type;
         protected TextField minPrice;
         protected TextField maxPrice;
-        protected TextField location;
+        protected ComboBox location;
         protected TextField enginePower;
         protected DateField fromDate;
         protected DateField toDate; 
-        public CreateFilmDialog()
+        private List<Car> searched;
+        public CarParametersDialog()
         {
             this.Title = "Car search options";
             Button ok = new Button("Search!");
@@ -32,7 +33,7 @@ namespace App
             {
                 X = 20, Y = Pos.Top(carColor), Width = Dim.Percent(50)
             };
-            ////color.SetSource(service.GetCarColors());
+            color.SetSource(service.carProxy.GetAllColors());
             this.Add(carColor, color);
 
             Label carType = new Label(2, 4, "Type:");
@@ -40,14 +41,15 @@ namespace App
             {
                 X = 20, Y = Pos.Top(carType), Width = Dim.Percent(50)
             };
-            /////type.SetSource()
+            type.SetSource(service.carProxy.GetAllTypes());
             this.Add(carType, type);
 
             Label carLocation = new Label(2, 6, "Location:");
-            location = new TextField("")
+            location = new ComboBox("not selected")
             {
                 X = 20, Y = Pos.Top(carLocation), Width = Dim.Percent(50)
             };
+            location.SetSource(service.carProxy.GetAllLocations());
             this.Add(carLocation, location);
 
             Label carEngine = new Label(2, 10, "Engine power:");
@@ -85,12 +87,9 @@ namespace App
             };
             this.Add(date, fromDate, toDate);
         }
-        public List<Car> GetCarsList()
+        public List<Car> GetCars()
         {
-            return new Film(){title = inputTitle.Text.ToString(),
-                            genre = inputGenre.Text.ToString(),
-                            description = inputDescription.Text.ToString(),
-                            releaseYear = int.Parse(inputRelease.Text.ToString())};
+            return this.searched;
         }
         public void SetRepository(Service repo)
         {
@@ -105,30 +104,39 @@ namespace App
         {
             string errorText = "";
             CarParams paramsToSearch = new CarParams();
-            if(enginePower.Text.ToString() != "" && !int.TryParse(enginePower.Text.ToString(), out paramsToSearch.enginePower) || paramsToSearch.enginePower < 0)
+            if(enginePower.Text.ToString() != "" && (!int.TryParse(enginePower.Text.ToString(), out paramsToSearch.enginePower) || paramsToSearch.enginePower < 0))
             {
                 errorText = "Engine power must be positive integer.";
             }
-            else if(minPrice.Text.ToString() != "" && !int.TryParse(minPrice.Text.ToString(), out paramsToSearch.minprice) || paramsToSearch.minprice < 0)
+            else if(minPrice.Text.ToString() != "" && (!int.TryParse(minPrice.Text.ToString(), out paramsToSearch.minprice) || paramsToSearch.minprice < 0))
             {
                 errorText = "Min price must be positive integer.";
             }
-            else if(maxPrice.Text.ToString() != "" && !int.TryParse(maxPrice.Text.ToString(), out paramsToSearch.maxPrice) || paramsToSearch.maxPrice < 0)
+            else if(maxPrice.Text.ToString() != "" && (!int.TryParse(maxPrice.Text.ToString(), out paramsToSearch.maxPrice) || paramsToSearch.maxPrice < 0))
             {
                 errorText = "Max price must be positive integer.";
             }
-            else if(!DateTime.TryParse(fromDate.Text.ToString(), out paramsToSearch.fromDate) || paramsToSearch.fromDate < DateTime.Now.Date)
+            else if(fromDate.Text.ToString() != "" && (!DateTime.TryParse(fromDate.Text.ToString(), out paramsToSearch.fromDate) || paramsToSearch.fromDate < DateTime.Now.Date))
             {
                 errorText = "From date must be in date format and bigger than today`s date.";
             }
-            else if(!DateTime.TryParse(toDate.Text.ToString(), out paramsToSearch.todate) || paramsToSearch.todate < DateTime.Now.Date)
+            else if(toDate.Text.ToString() != "" && (!DateTime.TryParse(toDate.Text.ToString(), out paramsToSearch.todate) || paramsToSearch.todate < DateTime.Now.Date))
             {
                 errorText = "To date must be in date format and bigger than today`s date.";
             }
             else
             {
-                //add ifs in proxy
-                //cars = service.GetSearched(paramsToSearch)
+                paramsToSearch.color = this.color.Text.ToString();
+                paramsToSearch.type = this.type.Text.ToString();
+                paramsToSearch.location = this.location.Text.ToString();
+                try
+                {
+                    searched = service.carProxy.GetCarsByParams(paramsToSearch);
+                }
+                catch(Exception ex)
+                {
+                    errorText = ex.Message;
+                }
             }
             if(errorText != "")
             {

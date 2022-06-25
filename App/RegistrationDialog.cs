@@ -54,9 +54,19 @@ namespace App
             };
             this.Add(ageLabel, age);
 
-            Label drLicenseLabel = new Label("Number of driver license:")
+            Label emailLabel = new Label("Email:")
             {
                 X = Pos.Center(), Y = 7
+            };
+            email = new TextField("")
+            {
+                X = Pos.Center(), Y = Pos.Bottom(emailLabel), Width = Dim.Percent(50)
+            };
+            this.Add(emailLabel, email);
+
+            Label drLicenseLabel = new Label("Number of driver license:")
+            {
+                X = Pos.Center(), Y = 9
             };
             drLicenseNum = new TextField("")
             {
@@ -66,7 +76,7 @@ namespace App
 
             Label categoriesLabel = new Label("Categories:")
             {
-                X = Pos.Center(), Y = 9
+                X = Pos.Center(), Y = 11
             };
             categories = new TextField("")
             {
@@ -76,7 +86,7 @@ namespace App
 
             Label loginLabel = new Label("Login:")
             {
-                X = Pos.Center(), Y = 11
+                X = Pos.Center(), Y = 13
             };
             login = new TextField("")
             {
@@ -86,7 +96,7 @@ namespace App
 
             Label passwordLabel = new Label("Password:")
             {
-                X = Pos.Center(), Y = 13
+                X = Pos.Center(), Y = 15
             };
             password = new TextField()
             {
@@ -107,7 +117,7 @@ namespace App
                 age = Int32.Parse(age.Text.ToString()),
                 email = email.Text.ToString(),
                 driver_license_num = drLicenseNum.Text.ToString(),
-                categories = categories.Text.ToString(),
+                category = categories.Text.ToString(),
                 login = login.Text.ToString(),
                 password = password.Text.ToString(),
                 vip = false,
@@ -129,9 +139,9 @@ namespace App
         {
             return this.clientToAdd;
         }
-        public void SetRepository(UserProxy repo)
+        public void SetRepository(UserProxy userProxy)
         {
-            this.clientProxy = repo;
+            this.clientProxy = userProxy;
         }
     }
 }

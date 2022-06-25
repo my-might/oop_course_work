@@ -76,9 +76,9 @@ namespace App
             this.canceled = true;
             Application.RequestStop();
         }
-        public void SetRepository(UserProxy repo)
+        public void SetRepository(UserProxy userProxy)
         {
-            this.clientProxy = repo;
+            this.clientProxy = userProxy;
         }
     }
 }

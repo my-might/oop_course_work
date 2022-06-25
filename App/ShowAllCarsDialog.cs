@@ -16,8 +16,6 @@ namespace App
         private UserState currentUser;
         public ShowAllCarsDialog()
         {
-            Button backToOptions = new Button("Go back");
-            backToOptions.Clicked += BackToOptions;
             Button ok = new Button("OK");
             ok.Clicked += DialogCanceled;
             this.AddButton(ok);
@@ -92,61 +90,27 @@ namespace App
             {
                 return;
             }
-            ShowFilmDialog dialog = new ShowFilmDialog();
+            ShowCarDialog dialog = new ShowCarDialog();
             dialog.SetService(repo);
-            dialog.SetFilm(film);
+            dialog.SetCar(car);
             dialog.SetUser(currentUser);
             Application.Run(dialog);
             if(dialog.deleted)
             {
-                repo.filmRepository.DeleteById(film.id);
-                repo.roleRepository.DeleteByFilmId(film.id);
-                repo.reviewRepository.DeleteByFilmId(film.id);
+                //repo.reviewRepository.DeleteByFilmId(film.id);
             }
-            if(page > repo.filmRepository.GetSearchPagesCount(searchValue) && page > 1)
+            if(page > repo.carProxy.GetSearchPagesCount(searchValue) && page > 1)
             {
                 page--;
             }
-            if(dialog.updated)
-            {
-                repo.filmRepository.Update((long)film.id, dialog.GetFilm());
-                List<int> updatedRoles = dialog.GetUpdatedRoles();
-                    foreach(int actorId in updatedRoles)
-                    {
-                        if(!repo.roleRepository.IsExist(film.id, actorId))
-                        {
-                            Role currentRole = new Role(){actorId = actorId, filmId = film.id};
-                            repo.roleRepository.Insert(currentRole);
-                        }
-                    }
-                    foreach(Actor actor in roles)
-                    {
-                        bool isExist = false;
-                        if(updatedRoles.Count != 0)
-                        {
-                            for(int i = 0; i<updatedRoles.Count; i++)
-                            {
-                                if(actor.id == updatedRoles[i])
-                                {
-                                    isExist = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if(!isExist)
-                        {
-                            repo.roleRepository.Delete(actor.id, film.id);
-                        }
-                    }
-            }
             ShowCurrentPage();
         }
-        public void SetRepository(RemoteService repo)
+        public void SetRepository(Service repo)
         {
             this.repo = repo;
             ShowCurrentPage();
         }
-        public void SetUser(User user)
+        public void SetUser(UserState user)
         {
             this.currentUser = user;
         }
@@ -161,7 +125,7 @@ namespace App
         }
         private void ClickNextPage()
         {
-            int totalPages = repo.filmRepository.GetSearchPagesCount(searchValue);
+            int totalPages = repo.carProxy.GetSearchPagesCount(searchValue);
             if(page == totalPages)
             {
                 return;
@@ -171,8 +135,7 @@ namespace App
         }
         private void ShowCurrentPage()
         {
-            /////select by fullname
-            int totalPages = repo.filmRepository.GetSearchPagesCount(searchValue);
+            int totalPages = repo.carProxy.GetSearchPagesCount(searchValue);
             if(page > totalPages && page > 1)
             {
                 page = totalPages;
@@ -187,19 +150,15 @@ namespace App
                 this.currentPageLabel.Text = this.page.ToString();
                 this.totalPagesLabel.Text = totalPages.ToString();
                 List<string> emptyText = new List<string>();
-                emptyText.Add("There are no films in the database.");
+                emptyText.Add("There are no cars in the database.");
                 this.allCars.SetSource(emptyText);
             }
             else
             {
                 this.currentPageLabel.Text = this.page.ToString();
                 this.totalPagesLabel.Text = totalPages.ToString();
-                this.allCars.SetSource(repo.filmRepository.GetSearchPage(searchValue, page));
+                this.allCars.SetSource(repo.carProxy.GetSearchPage(searchValue, page));
             }
-        }
-        private void BackToOptions()
-        {
-
         }
         private void DialogCanceled()
         {

@@ -27,7 +27,7 @@ namespace App
                 new MenuBarItem ("_File", new MenuItem [] {
                     new MenuItem ("_Sign in", "", user.SignIn),
                     new MenuItem ("_Sign up", "", user.SignUp),
-                    new MenuItem ("_Log out", "", )
+                    new MenuItem ("_Log out", "", user.LogOut),
                     new MenuItem ("_Exit", "", OnQuit)
                 }),
                 new MenuBarItem ("_Help", new MenuItem [] {

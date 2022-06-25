@@ -37,5 +37,10 @@ namespace ClassLib
             User result = context.users.Find(id);
             return result;
         }
+        public override User GetByLogin(string login)
+        {
+            User result = context.users.Where(u => u.login == login).First();
+            return result;
+        }
     }
 }

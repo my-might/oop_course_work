@@ -8,7 +8,7 @@ namespace App
     public class CreateCarDialog : Dialog
     {
         public bool canceled;
-        protected Service repo;
+        protected Service service;
         protected TextField inputType;
         protected TextField inputColor;
         protected TextField inputFullname;
@@ -17,6 +17,7 @@ namespace App
         protected TextField inputPricePerDay;
         protected CheckBox inputConditioner;
         protected TextField inputLocation;
+        protected TextField inputCategory;
         protected Car car;
         public CreateCarDialog()
         {
@@ -83,10 +84,17 @@ namespace App
                 X = 20, Y = Pos.Top(conditionerLabel)
             };
             this.Add(conditionerLabel, inputConditioner);
+
+            Label categoryLabel = new Label(2, 21, "Category:");
+            inputCategory = new TextField("")
+            {
+                X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(50),
+            };
+            this.Add(categoryLabel, inputCategory);
         }
-        public void SetRepository(Service repo)
+        public void SetRepository(Service service)
         {
-            this.repo = repo;
+            this.service = service;
         }
         public Car GetCar()
         {
@@ -112,13 +120,33 @@ namespace App
             {
                 errorText = "Price per day must be positive integer.";
             }
-            else if(inputFullname.Text.ToString() == "" || inputColor.Text.ToString() == "" || inputType.Text.ToString() == "" || inputLocation.Text.ToString() == "")
+            else if(inputFullname.Text.ToString() == "" || inputColor.Text.ToString() == "" || inputType.Text.ToString() == "" 
+                    || inputLocation.Text.ToString() == "" || inputCategory.ToString() == "")
             {
                 errorText = "All fields must be written.";
             }
             else
             {
-                //insert
+                Car toInsert = new Car{
+                    type = inputType.Text.ToString(),
+                    color = inputColor.Text.ToString(),
+                    location = inputLocation.Text.ToString(),
+                    category = inputCategory.Text.ToString(),
+                    engine_power = enginePower,
+                    engine_fuel_consumption = engineConsump,
+                    price_per_day = pricePerDay,
+                    fullname = inputFullname.Text.ToString(),
+                    conditioner = inputConditioner.Checked
+                };
+                try
+                {
+                    int result = service.carProxy.Insert(toInsert);
+                    MessageBox.Query("Inserted", $"Car was successfully inserted with id {result}", "OK");
+                }
+                catch(Exception ex)
+                {
+                    errorText = ex.Message;
+                }
             }
             if(errorText != "")
             {

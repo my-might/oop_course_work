@@ -1,5 +1,4 @@
 using Terminal.Gui;
-using System.Collections.Generic;
 using ClassLib;
 
 namespace App
@@ -7,13 +6,12 @@ namespace App
     public class MainWindowUser : Window
     {
         private Service service;
-        private Button viewProfile;
-        private Button viewCars;
-        private Button createCar;
-        private Button promoteUser;
         private UserState user;
-        
-        private bool isModerator;
+        private Button promoteUser;
+        private Button createCar;
+        private Label loggedUser;
+        private Button logOut;
+        private Button profile;
         public MainWindowUser()
         {
             this.Title = "Car rental salon";
@@ -22,7 +20,7 @@ namespace App
 
             Label hello = new Label("We are happy to see you in our car rental salon!")
             {
-                X = Pos.Center(), Y = 5, Width = 40
+                X = Pos.Center(), Y = 5
             };
             Label available = new Label("There are available options for you:")
             {
@@ -30,35 +28,30 @@ namespace App
             };
             this.Add(hello, available);
 
-            Button profile = new Button("My profile")
+            profile = new Button("My profile")
             {
                 X = Pos.Center() - 20, Y = 9
             };
             profile.Clicked += ClickShowProfile;
-            Button viewFilms = new Button("View all cars")
+            Button viewCars = new Button("Search for cars")
             {
-                X = Pos.Center() + 5, Y = 9
+                X = Pos.Center() + 5, Y = 10
             };
-            viewFilms.Clicked += ClickShowFilms;
-            createActor = new Button("Create actor")
-            {
-                X = Pos.Center() - 20, Y = 15
-            };
-            createActor.Clicked += ClickCreateActor;
+            viewCars.Clicked += ClickShowCars;
 
-            createFilm = new Button("Create film")
+            createCar = new Button("Create car")
             {
-                X = Pos.Center() - 20, Y = 18
+                X = Pos.Center() + 5, Y = 12
             };
-            createFilm.Clicked += ClickCreateFilm;
-
+            createCar.Clicked += ClickCreateCar;
+        
             promoteUser = new Button("Promote user")
             {
-                X = Pos.Center() + 5, Y = 18
+                X = Pos.Center() + 5, Y = 14
             };
             promoteUser.Clicked += ClickPromoteUser;
 
-            this.Add(profile, viewFilms, viewActors, viewReviews, createReview, createFilm, createActor, promoteUser);
+            this.Add(profile, viewCars, createCar, promoteUser);
 
             loggedUser = new Label(" ")
             {
@@ -66,7 +59,7 @@ namespace App
                 Width = Dim.Fill() - 20
             };
             
-            Button logOut = new Button("Log out")
+            logOut = new Button("Log out")
             {
                 X = Pos.Percent(85), Y = Pos.Y(loggedUser)
             };
@@ -74,131 +67,69 @@ namespace App
             this.Add(loggedUser, logOut);
 
         }
-        public void SetUser(User user)
+        public void SetUser(UserState user)
         {
-            this.currentUser = user;
-            this.loggedUser.Text = $"Logged user: {user.username}";
-            if(user.isModerator == 0)
+            this.user = user;
+            if(user.User == null)
             {
-                logged.Text = "You are successfully logged as user.";
-                isModerator = false;
-                createActor.Visible = false;
-                createFilm.Visible = false;
+                profile.Visible = false;
+                logOut.Visible = false;
+            }
+            else if(!user.User.isWorker)
+            {
+                loggedUser.Text = "You are successfully logged as user.";
+                createCar.Visible = false;
                 promoteUser.Visible = false;
             }
             else
             {
-                logged.Text = "You are successfully logged as moderator.";
-                isModerator = true;
+                loggedUser.Text = "You are successfully logged as worker.";
             }
         }
         private void OnLogOut()
         {
-            Application.Top.RemoveAll();
-            UserInterface.ProcessRegistration();
+            user.LogOut();
         }
         private void ClickPromoteUser()
         {
             PromoteUserDialog dialog = new PromoteUserDialog();
-            dialog.SetService(repo);
+            dialog.SetService(service);
             Application.Run(dialog);
-            if(!dialog.canceled)
-            {
-                string username = dialog.GetUsername();
-                User user = repo.userRepository.GetByUsername(username);
-                user.isModerator = 1;
-                repo.userRepository.Update(user.id, user);
-            }
         }
-        private void ClickCreateFilm()
+        private void ClickCreateCar()
         {
-            CreateFilmDialog dialog = new CreateFilmDialog();
-            dialog.SetRepository(repo.actorRepository);
+            CreateCarDialog dialog = new CreateCarDialog();
+            dialog.SetRepository(service);
             Application.Run(dialog);
             if(!dialog.canceled)
             {
-                Film film = dialog.GetFilm();
-                int insertedId = (int)repo.filmRepository.Insert(film);
-                film.id = insertedId;
-                List<int> actorIds = dialog.GetActorIds();
-                foreach(int id in actorIds)
+                ShowCarDialog carDialog = new ShowCarDialog();
+                carDialog.SetService(service);
+                carDialog.SetCar(dialog.GetCar());
+                carDialog.SetUser(user);
+                Application.Run(carDialog);
+                if(carDialog.deleted)
                 {
-                    Role currentRole = new Role(){actorId = id, filmId = insertedId};
-                    repo.roleRepository.Insert(currentRole);
-                }
-                List<Actor> roles = repo.roleRepository.GetAllActors(film.id);
-                if(roles.Count != 0)
-                {
-                    film.actors = new Actor[roles.Count];
-                    roles.CopyTo(film.actors);
-                }
-                else
-                {
-                    film.actors = null;
-                }
-                ShowFilmDialog filmDialog = new ShowFilmDialog();
-                filmDialog.SetService(repo);
-                filmDialog.SetFilm(film);
-                filmDialog.SetUser(currentUser);
-                Application.Run(filmDialog);
-                if(filmDialog.deleted)
-                {
-                    repo.filmRepository.DeleteById(film.id);
-                    repo.roleRepository.DeleteByFilmId(film.id);
-                    repo.reviewRepository.DeleteByFilmId(film.id);
-                }
-                if(filmDialog.updated)
-                {
-                    repo.filmRepository.Update((long)film.id, dialog.GetFilm());
-                    List<int> updatedRoles = filmDialog.GetUpdatedRoles();
-                        foreach(int actorId in updatedRoles)
-                        {
-                            if(!repo.roleRepository.IsExist(film.id, actorId))
-                            {
-                                Role currentRole = new Role(){actorId = actorId, filmId = film.id};
-                                repo.roleRepository.Insert(currentRole);
-                            }
-                        }
-                        foreach(Actor actor in roles)
-                        {
-                            bool isExist = false;
-                            if(updatedRoles.Count != 0)
-                            {
-                                for(int i = 0; i<updatedRoles.Count; i++)
-                                {
-                                    if(actor.id == updatedRoles[i])
-                                    {
-                                        isExist = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if(!isExist)
-                            {
-                                repo.roleRepository.Delete(actor.id, film.id);
-                            }
-                        }
+                    //repo.reviewRepository.DeleteByFilmId(film.id);
                 }
             }
         }
         private void ClickShowProfile()
         {
-            ShowProfileDialog dialog = new ShowProfileDialog();
-            dialog.SetService(repo);
-            dialog.SetUser(currentUser);
-            dialog.SetReviews();
+            UserProfileDialog dialog = new UserProfileDialog();
+            dialog.SetInfo(user, service);
             Application.Run(dialog);
         }
-        private void ClickShowFilms()
+        private void ClickShowCars()
         {
-            ShowAllFilmsDialog dialog = new ShowAllFilmsDialog();
-            dialog.SetRepository(repo);
-            dialog.SetUser(currentUser);
+            ShowAllCarsDialog dialog = new ShowAllCarsDialog();
+            dialog.SetRepository(service);
+            dialog.SetUser(user);
             Application.Run(dialog);
         }
         public void SetService(Service service)
         {
-            this.repo = repo;
+            this.service = service;
         }
     }
 }

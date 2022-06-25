@@ -15,10 +15,10 @@ namespace App
         private DateField fromDate;
         private DateField toDate;
         private CheckBox isDeleted;
+        private Button delete;
         public bool deleted;
-        public bool updated;
         private Rent rentToShow;
-        private Service repo;
+        private Service service;
         public ShowRentDialog()
         {
             this.Title = "Show rent";
@@ -94,15 +94,22 @@ namespace App
             };
             this.Add(toDateLabel, toDate);
 
-            Label isDeletedLabel = new Label(2, 18, "Deleted:");
+            Label isDeletedLabel = new Label(2, 18, "Canceled:");
             isDeleted = new CheckBox()
             {
                 X = 20, Y = Pos.Top(toDateLabel)
             };
             this.Add(isDeletedLabel, isDeleted);
+
+            delete = new Button("Cancel rent")
+            {
+                X = 20, Y = 20
+            };
+            delete.Clicked += OnDeleteRent;
         }
-        public void SetRent(Rent rent)
+        public void SetInfo(Rent rent, Service service, UserState user)
         {
+            this.service = service;
             this.rentToShow = rent;
             this.idField.Text = rent.id.ToString();
             this.actionDate.Date = rent.action_time.Date;
@@ -114,6 +121,26 @@ namespace App
             this.fromDate.Date = rent.from_date.Date;
             this.toDate.Date = rent.to_date.Date;
             this.isDeleted.Checked = rent.isDeleted;
+            if(user.User.id != rent.client_id)
+            {
+                delete.Visible = false;
+            }
+        }
+        private void OnDeleteRent()
+        {
+            if(rentToShow.isDeleted)
+            {
+                MessageBox.Query("Cancel rent", "Rent is already canceled", "OK");
+                return;
+            }
+            int index = MessageBox.Query("Cancel rent", "Are you sure?", "No", "Yes");
+            if(index == 1)
+            {
+                rentToShow.isDeleted = true;
+                service.rentProxy.Update(rentToShow);
+                this.deleted = true;
+                Application.RequestStop();
+            }
         }
         private void DialogCanceled()
         {

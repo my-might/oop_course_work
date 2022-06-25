@@ -118,7 +118,14 @@ namespace App
             rent.action_time = DateTime.Now;
             rent.car_id = car.id;
             rent.client_id = user.User.id;
-            ///service.AddRent()
+            try
+            {
+                service.rentProxy.Insert(rent);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.ErrorQuery("Error", $"{ex.Message}",  "OK");
+            }
             ReceiptDialog receiptDialog = new ReceiptDialog();
             receiptDialog.SetInfo(result, car);
             Application.Run(receiptDialog);
@@ -148,7 +155,6 @@ namespace App
         {
             RegistrationDialog dialog = new RegistrationDialog();
             dialog.SetRepository(service.userProxy);
-            Application.Run(dialog);
             Application.Run(dialog);
             if(!dialog.canceled)
             {

@@ -15,10 +15,11 @@ namespace App
         private TextField pricePerDayField;
         private TextField locationField;
         private TextField fullnameField;
+        private TextField category;
         public bool deleted;
         public bool updated;
         public Car carToShow;
-        private Service repo;
+        private Service service;
         private UserState user;
         private Button delete;
         private Button edit;
@@ -105,23 +106,30 @@ namespace App
             };
             this.Add(conditionerLabel, conditioner);
             
+            Label categoryLabel = new Label(2, 21, "Category:");
+            category = new TextField("")
+            {
+                X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(50),
+                ReadOnly = true
+            };
+            this.Add(categoryLabel, category);
 
-            delete = new Button(2, 21, "Delete");
+            delete = new Button(2, 22, "Delete");
             delete.Clicked += OnDeleteCar;
-            edit = new Button(2, 22, "Edit");
+            edit = new Button(2, 23, "Edit");
             edit.Clicked += OnEditCar;
-            rent = new Button(2, 23, "Rent car");
+            rent = new Button(2, 24, "Rent car");
             rent.Clicked += OnRentCar;
-            viewRents = new Button(2, 23, "View all rents");
+            viewRents = new Button(2, 25, "View all rents");
             viewRents.Clicked += OnShowRents;
             this.Add(delete, edit, rent, viewRents);
         }
         private void OnDeleteCar()
         {
-            int index = MessageBox.Query("Delete film", "Are you sure?", "No", "Yes");
+            int index = MessageBox.Query("Delete car", "Are you sure?", "No", "Yes");
             if(index == 1)
             {
-                ////service.DeleteCar()
+                service.carProxy.DeleteById(carToShow.id);
                 this.deleted = true;
                 Application.RequestStop();
             }
@@ -130,7 +138,7 @@ namespace App
         {
             EditCarDialog dialog = new EditCarDialog();
             dialog.SetCar(this.carToShow);
-            dialog.SetRepository(this.repo);
+            dialog.SetRepository(this.service);
             Application.Run(dialog);
 
             if(!dialog.canceled)
@@ -149,7 +157,7 @@ namespace App
         private void OnShowRents()
         {
             ShowCarRents dialog = new ShowCarRents();
-            dialog.SetRepository(repo, carToShow.id);
+            dialog.SetInfo(user, service, carToShow.id);
             Application.Run(dialog);
         }
         private void OnSubscribe()
@@ -169,9 +177,9 @@ namespace App
             this.pricePerDayField.Text = car.price_per_day.ToString();
             this.conditioner.Checked = car.conditioner;
         }
-        public void SetService(Service repo)
+        public void SetService(Service service)
         {
-            this.repo = repo;
+            this.service = service;
         }
         public void SetUser(UserState user)
         {

@@ -12,12 +12,15 @@ namespace App
         {
             this.inputFullname.Text = car.fullname;
             this.inputType.Text = car.type;
+            this.inputType.ReadOnly = true;
             this.inputColor.Text = car.color;
             this.inputLocation.Text = car.location;
             this.inputEnginePower.Text = car.engine_power.ToString();
             this.inputEngineConsump.Text = car.engine_fuel_consumption.ToString();
             this.inputPricePerDay.Text = car.price_per_day.ToString();
             this.inputConditioner.Checked = car.conditioner;
+            this.inputCategory.Text = car.category;
+            this.inputCategory.ReadOnly = true;
         }
     }
 }
