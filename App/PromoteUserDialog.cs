@@ -52,13 +52,13 @@ namespace App
                 {
                     errorText = "Login field mustn`t be empty";
                 }
-                else if(existing.isWorker)
+                else if(existing.is_worker)
                 {
                     errorText = "User is already a worker";
                 }
                 else
                 {
-                    existing.isWorker = true;
+                    existing.is_worker = true;
                     service.userProxy.Update(existing);
                 }
             }

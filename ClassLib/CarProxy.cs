@@ -9,9 +9,9 @@ namespace ClassLib
         abstract public void Update(Car car);
         abstract public Car GetById(int id);
         abstract public List<Car> GetAll();
-        abstract public int GetSearchPagesCount(string searchFullname);
-        abstract public List<Car> GetSearchPage(string searchFullname, int page);
-        abstract public List<Car> GetCarsByParams(CarParams parameters);
+        abstract public int GetSearchPagesCount(string searchFullname, CarParams carParams);
+        abstract public List<Car> GetSearchPage(string searchFullname, int page, CarParams carParams);
+        abstract public List<Car> GetCarsByParams(CarParams parameters, List<Car> selectFrom);
         abstract public List<string> GetAllTypes();
         abstract public List<string> GetAllColors();
         abstract public List<string> GetAllLocations();
@@ -78,27 +78,14 @@ namespace ClassLib
             List<Car> result = carRepo.GetAll();
             return result;
         }
-        public override int GetSearchPagesCount(string searchFullname)
-        {
-            int result = carRepo.GetSearchPagesCount(searchFullname);
-            return result;
-        }
-        public override List<Car> GetSearchPage(string searchFullname, int page)
-        {
-            if(page > carRepo.GetSearchPagesCount(searchFullname))
-            {
-                throw new Exception("Invalid page number");
-            }
-            List<Car> result = carRepo.GetSearchPage(searchFullname, page);
-            return result;
-        }
-        public override List<Car> GetCarsByParams(CarParams parameters)
+        public override int GetSearchPagesCount(string searchFullname, CarParams parameters)
         {
             if(parameters.minprice > parameters.maxPrice)
             {
                 throw new Exception("Max price must be bidder than min price");
             }
-            if((parameters.fromDate != new DateTime() && parameters.todate == new DateTime()) || (parameters.fromDate == new DateTime() && parameters.todate != new DateTime()))
+            if((parameters.fromDate != new DateTime(2001, 01, 01) && parameters.todate == new DateTime(2001, 01, 01)) 
+                || (parameters.fromDate == new DateTime(2001, 01, 01) && parameters.todate != new DateTime(2001, 01, 01)))
             {
                 throw new Exception("You have to set both dates to search with them.");
             }
@@ -106,7 +93,47 @@ namespace ClassLib
             {
                 throw new Exception("To date must be bigger than from date.");
             }
-            List<Car> result = carRepo.GetCarsByParams(parameters);
+            int result = carRepo.GetSearchPagesCount(searchFullname, parameters);
+            return result;
+        }
+        public override List<Car> GetSearchPage(string searchFullname, int page, CarParams parameters)
+        {
+            if(page > carRepo.GetSearchPagesCount(searchFullname, parameters))
+            {
+                throw new Exception("Invalid page number");
+            }
+            if(parameters.minprice > parameters.maxPrice)
+            {
+                throw new Exception("Max price must be bidder than min price");
+            }
+            if((parameters.fromDate != new DateTime(2001, 01, 01) && parameters.todate == new DateTime(2001, 01, 01)) 
+                || (parameters.fromDate == new DateTime(2001, 01, 01) && parameters.todate != new DateTime(2001, 01, 01)))
+            {
+                throw new Exception("You have to set both dates to search with them.");
+            }
+            if(parameters.fromDate.Date > parameters.todate.Date)
+            {
+                throw new Exception("To date must be bigger than from date.");
+            }
+            List<Car> result = carRepo.GetSearchPage(searchFullname, page, parameters);
+            return result;
+        }
+        public override List<Car> GetCarsByParams(CarParams parameters, List<Car> selectFrom)
+        {
+            if(parameters.minprice > parameters.maxPrice)
+            {
+                throw new Exception("Max price must be bidder than min price");
+            }
+            if((parameters.fromDate != new DateTime(2001, 01, 01) && parameters.todate == new DateTime(2001, 01, 01)) 
+                || (parameters.fromDate == new DateTime(2001, 01, 01) && parameters.todate != new DateTime(2001, 01, 01)))
+            {
+                throw new Exception("You have to set both dates to search with them.");
+            }
+            if(parameters.fromDate.Date > parameters.todate.Date)
+            {
+                throw new Exception("To date must be bigger than from date.");
+            }
+            List<Car> result = carRepo.GetCarsByParams(parameters, selectFrom);
             return result;
         }
         public override List<string> GetAllColors()

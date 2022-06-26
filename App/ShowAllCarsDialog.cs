@@ -1,19 +1,21 @@
 using Terminal.Gui;
 using System.Collections.Generic;
 using ClassLib;
+using System;
 
 namespace App
 {
     public class ShowAllCarsDialog : Dialog
     {
-        private Service repo;
+        private Service service;
         private int page = 1;
         private Label totalPagesLabel;
         private Label currentPageLabel;
         private TextField searchFullname;
         private string searchValue = "";
         private ListView allCars;
-        private UserState currentUser;
+        private CarParams carParams;
+        private UserState user;
         public ShowAllCarsDialog()
         {
             Button ok = new Button("OK");
@@ -91,28 +93,20 @@ namespace App
                 return;
             }
             ShowCarDialog dialog = new ShowCarDialog();
-            dialog.SetService(repo);
-            dialog.SetCar(car);
-            dialog.SetUser(currentUser);
+            dialog.SetInfo(car, service, user);
             Application.Run(dialog);
-            if(dialog.deleted)
-            {
-                //repo.reviewRepository.DeleteByFilmId(film.id);
-            }
-            if(page > repo.carProxy.GetSearchPagesCount(searchValue) && page > 1)
+            if(page > service.carProxy.GetSearchPagesCount(searchValue, carParams) && page > 1)
             {
                 page--;
             }
             ShowCurrentPage();
         }
-        public void SetRepository(Service repo)
+        public void SetInfo(Service service, UserState user, CarParams carParams)
         {
-            this.repo = repo;
+            this.service = service;
+            this.user = user;
+            this.carParams = carParams;
             ShowCurrentPage();
-        }
-        public void SetUser(UserState user)
-        {
-            this.currentUser = user;
         }
         private void ClickPrevPage()
         {
@@ -125,7 +119,7 @@ namespace App
         }
         private void ClickNextPage()
         {
-            int totalPages = repo.carProxy.GetSearchPagesCount(searchValue);
+            int totalPages = service.carProxy.GetSearchPagesCount(searchValue, carParams);
             if(page == totalPages)
             {
                 return;
@@ -135,7 +129,7 @@ namespace App
         }
         private void ShowCurrentPage()
         {
-            int totalPages = repo.carProxy.GetSearchPagesCount(searchValue);
+            int totalPages = service.carProxy.GetSearchPagesCount(searchValue, carParams);
             if(page > totalPages && page > 1)
             {
                 page = totalPages;
@@ -157,7 +151,7 @@ namespace App
             {
                 this.currentPageLabel.Text = this.page.ToString();
                 this.totalPagesLabel.Text = totalPages.ToString();
-                this.allCars.SetSource(repo.carProxy.GetSearchPage(searchValue, page));
+                this.allCars.SetSource(service.carProxy.GetSearchPage(searchValue, page, carParams));
             }
         }
         private void DialogCanceled()

@@ -42,63 +42,91 @@ namespace ClassLib
         }
         public override List<Car> GetAll()
         {
-            List<Car> result = context.cars.Select(c => c).ToList();
+            List<Car> result = context.cars.FromSqlRaw("SELECT * FROM cars").ToList();
             return result;
         }
-        public override int GetSearchPagesCount(string searchFullname)
+        public override int GetSearchPagesCount(string searchFullname, CarParams carParams)
         {
             const int pageSize = 10;
-            int result = context.cars.Where(c => c.fullname.Contains(searchFullname)).Count();
+            List<Car> byFullname = context.cars.FromSqlRaw("SELECT * FROM cars WHERE fullname LIKE '%' || {0} || '%'", searchFullname).ToList();
+            int result = GetCarsByParams(carParams, byFullname).Count;
             return (int)Math.Ceiling((int)result / (double)pageSize);
         }
-        public override List<Car> GetSearchPage(string searchFullname, int page)
+        public override List<Car> GetSearchPage(string searchFullname, int page, CarParams carParams)
         {
             const int pageSize = 10;
-            List<Car> result = context.cars.FromSqlRaw("SELECT * FROM cars WHERE fullname LIKE '%' || {0} || '%' LIMIT {1} OFFSET {2}", searchFullname, pageSize, pageSize*(page-1)).ToList();
+            List<Car> byFullname = context.cars.FromSqlRaw("SELECT * FROM cars WHERE fullname LIKE '%' || {0} || '%' LIMIT {1} OFFSET {2}", searchFullname, pageSize, pageSize*(page-1)).ToList();
+            List<Car> result = GetCarsByParams(carParams, byFullname);
             return result;
         }
-        public override List<Car> GetCarsByParams(CarParams parameters)
+        public override List<Car> GetCarsByParams(CarParams parameters, List<Car> selectFrom)
         {
-            List<Car> result = GetAll();
-            if(parameters.type != "")
+            if(parameters.type != "not selected")
             {
-                result = GetByType(parameters.type, result);
+                Console.WriteLine(parameters.type);
+                selectFrom = GetByType(parameters.type, selectFrom);
             }
-            if(parameters.color != "")
+            if(parameters.color != "not selected")
             {
-                result = GetByColor(parameters.color, result);
+                Console.WriteLine(parameters.color);
+                selectFrom = GetByColor(parameters.color, selectFrom);
             }
-            if(parameters.location != "")
+            if(parameters.location != "not selected")
             {
-                result = GetByLocation(parameters.location, result);
+                Console.WriteLine(parameters.location);
+                selectFrom = GetByLocation(parameters.location, selectFrom);
             }
             if(parameters.enginePower != 0)
             {
-                result = GetByEnginePower(parameters.enginePower, result);
+                selectFrom = GetByEnginePower(parameters.enginePower, selectFrom);
             }
             if(parameters.minprice != 0 && parameters.maxPrice != 0)
             {
-                result = GetByPrice(parameters.minprice, parameters.maxPrice, result);
+                selectFrom = GetByPrice(parameters.minprice, parameters.maxPrice, selectFrom);
             }
-            if(parameters.fromDate != new DateTime())
+            if(parameters.fromDate != new DateTime(2001, 01, 01))
             {
-                result = GetByDates(parameters.fromDate, parameters.todate, result);
+                selectFrom = GetByDates(parameters.fromDate, parameters.todate, selectFrom);
             }
-            return result;
+            return selectFrom;
         }
         public override List<string> GetAllColors()
         {
-            List<string> result = context.cars.Select(c => c.color).ToList();
+            List<Car> all = GetAll();
+            List<string> result = new List<string>();
+            foreach(Car car in all)
+            {
+                if(!result.Contains(car.color))
+                {
+                    result.Add(car.color);
+                }
+            }
             return result;
         }
         public override List<string> GetAllLocations()
         {
-            List<string> result = context.cars.Select(c => c.location).ToList();
+            List<Car> all = GetAll();
+            List<string> result = new List<string>();
+            foreach(Car car in all)
+            {
+                if(!result.Contains(car.location))
+                {
+                    result.Add(car.location);
+                }
+            }
             return result;
         }
         public override List<string> GetAllTypes()
         {
-            List<string> result = context.cars.Select(c => c.type).ToList();
+            List<Car> all = GetAll();
+            List<string> result = new List<string>();
+            foreach(Car car in all)
+            {
+                if(!result.Contains(car.type))
+                {
+                    result.Add(car.type);
+                }
+            }
             return result;
         }
         private List<Car> GetByColor(string color, List<Car> car)

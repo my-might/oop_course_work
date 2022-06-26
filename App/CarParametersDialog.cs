@@ -18,6 +18,7 @@ namespace App
         protected DateField fromDate;
         protected DateField toDate; 
         private List<Car> searched;
+        private CarParams paramsToSearch;
         public CarParametersDialog()
         {
             this.Title = "Car search options";
@@ -33,7 +34,6 @@ namespace App
             {
                 X = 20, Y = Pos.Top(carColor), Width = Dim.Percent(50)
             };
-            color.SetSource(service.carProxy.GetAllColors());
             this.Add(carColor, color);
 
             Label carType = new Label(2, 4, "Type:");
@@ -41,7 +41,6 @@ namespace App
             {
                 X = 20, Y = Pos.Top(carType), Width = Dim.Percent(50)
             };
-            type.SetSource(service.carProxy.GetAllTypes());
             this.Add(carType, type);
 
             Label carLocation = new Label(2, 6, "Location:");
@@ -49,7 +48,6 @@ namespace App
             {
                 X = 20, Y = Pos.Top(carLocation), Width = Dim.Percent(50)
             };
-            location.SetSource(service.carProxy.GetAllLocations());
             this.Add(carLocation, location);
 
             Label carEngine = new Label(2, 10, "Engine power:");
@@ -65,11 +63,11 @@ namespace App
             };
             minPrice = new TextField("")
             {
-                X = Pos.Percent(50) - 10, Y = 12, Width = Dim.Percent(20)
+                X = Pos.Percent(50) - 10, Y = 12, Width = Dim.Percent(10)
             };
             maxPrice = new TextField("")
             {
-                X = Pos.Percent(50) + 10, Y = 12, Width = Dim.Percent(20)
+                X = Pos.Percent(50) + 10, Y = 12, Width = Dim.Percent(10)
             };
             this.Add(price, minPrice, maxPrice);
 
@@ -87,13 +85,16 @@ namespace App
             };
             this.Add(date, fromDate, toDate);
         }
-        public List<Car> GetCars()
+        public CarParams GetParams()
         {
-            return this.searched;
+            return this.paramsToSearch;
         }
-        public void SetRepository(Service repo)
+        public void SetRepository(Service service)
         {
-            this.service = repo;
+            this.service = service;
+            color.SetSource(service.carProxy.GetAllColors());
+            type.SetSource(service.carProxy.GetAllTypes());
+            location.SetSource(service.carProxy.GetAllLocations());
         }
         private void DialogCanceled()
         {
@@ -103,7 +104,8 @@ namespace App
         private void DialogSubmit()
         {
             string errorText = "";
-            CarParams paramsToSearch = new CarParams();
+            paramsToSearch = new CarParams();
+            Console.WriteLine(fromDate.Date.ToString());
             if(enginePower.Text.ToString() != "" && (!int.TryParse(enginePower.Text.ToString(), out paramsToSearch.enginePower) || paramsToSearch.enginePower < 0))
             {
                 errorText = "Engine power must be positive integer.";
@@ -116,11 +118,11 @@ namespace App
             {
                 errorText = "Max price must be positive integer.";
             }
-            else if(fromDate.Text.ToString() != "" && (!DateTime.TryParse(fromDate.Text.ToString(), out paramsToSearch.fromDate) || paramsToSearch.fromDate < DateTime.Now.Date))
+            else if(fromDate.Date != new DateTime(2001, 01, 01) && (!DateTime.TryParse(fromDate.Text.ToString(), out paramsToSearch.fromDate) || paramsToSearch.fromDate < DateTime.Now.Date))
             {
                 errorText = "From date must be in date format and bigger than today`s date.";
             }
-            else if(toDate.Text.ToString() != "" && (!DateTime.TryParse(toDate.Text.ToString(), out paramsToSearch.todate) || paramsToSearch.todate < DateTime.Now.Date))
+            else if(toDate.Date != new DateTime(2001, 01, 01) && (!DateTime.TryParse(toDate.Text.ToString(), out paramsToSearch.todate) || paramsToSearch.todate < DateTime.Now.Date))
             {
                 errorText = "To date must be in date format and bigger than today`s date.";
             }
@@ -129,14 +131,6 @@ namespace App
                 paramsToSearch.color = this.color.Text.ToString();
                 paramsToSearch.type = this.type.Text.ToString();
                 paramsToSearch.location = this.location.Text.ToString();
-                try
-                {
-                    searched = service.carProxy.GetCarsByParams(paramsToSearch);
-                }
-                catch(Exception ex)
-                {
-                    errorText = ex.Message;
-                }
             }
             if(errorText != "")
             {

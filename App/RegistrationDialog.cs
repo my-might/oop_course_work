@@ -40,7 +40,7 @@ namespace App
             };
             fullname = new TextField("")
             {
-                X = Pos.Center(), Y = Pos.Bottom(fullname), Width = Dim.Percent(50)
+                X = Pos.Center(), Y = Pos.Bottom(fullnameLabel), Width = Dim.Percent(50)
             };
             this.Add(fullnameLabel, fullname);
 
@@ -98,7 +98,7 @@ namespace App
             {
                 X = Pos.Center(), Y = 15
             };
-            password = new TextField()
+            password = new TextField("")
             {
                 X = Pos.Center(), Y = Pos.Bottom(passwordLabel), Width = Dim.Percent(50),
                 Secret = true
@@ -112,27 +112,45 @@ namespace App
         }
         private void DialogSubmit()
         {
-            clientToAdd = new User() {
-                fullname = fullname.Text.ToString(),
-                age = Int32.Parse(age.Text.ToString()),
-                email = email.Text.ToString(),
-                driver_license_num = drLicenseNum.Text.ToString(),
-                category = categories.Text.ToString(),
-                login = login.Text.ToString(),
-                password = password.Text.ToString(),
-                vip = false,
-                isWorker = false
-            };
-            try
+            string errorText = "";
+            if(fullname.Text.ToString() == "" || age.Text.ToString() == "" || email.Text.ToString() == "" || drLicenseNum.Text.ToString() == ""
+                || categories.Text.ToString() == "" || login.Text.ToString() == "" || password.Text.ToString() == "")
             {
-                clientToAdd.id = clientProxy.Insert(clientToAdd);
-                MessageBox.Query("Registration", "You have registered successfully!", "OK");
+                errorText = "You have to fill all fields first.";
+            }
+            else
+            {
+                clientToAdd = new User() {
+                    fullname = fullname.Text.ToString(),
+                    age = Int32.Parse(age.Text.ToString()),
+                    email = email.Text.ToString(),
+                    driver_license_num = drLicenseNum.Text.ToString(),
+                    category = categories.Text.ToString(),
+                    login = login.Text.ToString(),
+                    password = password.Text.ToString(),
+                    vip = false,
+                    is_worker = false
+                };
+                try
+                {
+                    clientToAdd.id = clientProxy.Insert(clientToAdd);
+                    MessageBox.Query("Registration", "You have registered successfully!", "OK");
+                    this.canceled = false;
+                    Application.RequestStop();
+                }
+                catch(Exception ex)
+                {
+                    errorText = ex.Message;
+                }
+            }
+            if(errorText != "")
+            {
+                MessageBox.ErrorQuery("Error", errorText, "OK");
+            }
+            else
+            {
                 this.canceled = false;
                 Application.RequestStop();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.ErrorQuery("Error", ex.Message,  "OK");
             }
         }
         public User GetClient()

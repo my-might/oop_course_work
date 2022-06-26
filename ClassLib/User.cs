@@ -12,7 +12,7 @@ namespace ClassLib
         public string category { get; set; }
         public string login { get; set; }
         public string password { get; set; }
-        public bool isWorker { get; set; }
+        public bool is_worker { get; set; }
         public bool vip { get; set; }
         public List<Rent> rents { get; set; }
     }

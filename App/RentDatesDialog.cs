@@ -10,6 +10,7 @@ namespace App
         private DateField toDate;
         private Rent rentToReturn;
         private Service service;
+        private User user;
         private int carId;
         public bool canceled;
         public RentDatesDialog()
@@ -58,14 +59,22 @@ namespace App
             {
                 rentToReturn = new Rent() {
                     from_date = frDate,
-                    to_date = tDate
+                    to_date = tDate,
+                    car_id = carId
                 };
                 try 
                 {
                     bool isAvailable = service.rentProxy.IsAvailableForDates(frDate, tDate, carId);
                     if(!isAvailable)
                     {
-                        errorText = "Selected car is not available in entered dates.";
+                        int result = MessageBox.Query("Failed", "Car is not available in entered dates. Do you want to know if it will free?", "Yes", "No");
+                        if(result == 0)
+                        {
+                            CarRentObserver observer = new CarRentObserver(rentToReturn, user);
+                            RentManager rentManager = new RentManager();
+                            rentManager.Attach(observer);
+                        }
+                        return;
                     }
                 }
                 catch(Exception ex)
@@ -83,13 +92,11 @@ namespace App
                 Application.RequestStop();
             }
         }
-        public void SetService(Service service)
+        public void SetInfo(Service service, int carId, User user)
         {
             this.service = service;
-        }
-        public void SetCar(int id)
-        {
-            this.carId = id;
+            this.carId = carId;
+            this.user = user;
         }
         public Rent GetRent()
         {

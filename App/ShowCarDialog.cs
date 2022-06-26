@@ -39,7 +39,7 @@ namespace App
             };
             this.Add(idLabel, idField);
 
-            Label fullnameLabel = new Label(2, 3, "Fullname:");
+            Label fullnameLabel = new Label(2, 2, "Fullname:");
             fullnameField = new TextField("")
             {
                 X = 20, Y = Pos.Top(fullnameLabel), Width = Dim.Percent(50),
@@ -47,7 +47,7 @@ namespace App
             };
             this.Add(fullnameLabel, fullnameField);
 
-            Label typeLabel = new Label(2, 5, "Type:");
+            Label typeLabel = new Label(2, 3, "Type:");
             typeField = new TextField("")
             {
                 X = 20, Y = Pos.Top(typeLabel), Width = Dim.Percent(50),
@@ -55,7 +55,7 @@ namespace App
             };
             this.Add(typeLabel, typeField);
 
-            Label colorLabel = new Label(2, 7, "Color:");
+            Label colorLabel = new Label(2, 4, "Color:");
             colorfield = new TextField("")
             {
                 X = 20, Y = Pos.Top(colorLabel), Width = Dim.Percent(50),
@@ -63,7 +63,7 @@ namespace App
             };
             this.Add(colorLabel, colorfield);
 
-            Label locationLabel = new Label(2, 11, "Location:");
+            Label locationLabel = new Label(2, 5, "Location:");
             locationField = new TextField("")
             {
                 X = 20, Y = Pos.Top(locationLabel), Width = Dim.Percent(50),
@@ -71,7 +71,7 @@ namespace App
             };
             this.Add(locationLabel, locationField);
 
-            Label enginePowerLabel = new Label(2, 13, "Engine power:");
+            Label enginePowerLabel = new Label(2, 6, "Engine power:");
             enginePowerField = new TextField("")
             {
                 X = 20, Y = Pos.Top(enginePowerLabel), Width = Dim.Percent(50),
@@ -79,7 +79,7 @@ namespace App
             };
             this.Add(enginePowerLabel, enginePowerField);
 
-            Label engineConsumpLabel = new Label(2, 15, "Engine consumption:");
+            Label engineConsumpLabel = new Label(2, 7, "Engine consumption:");
             engineConsumpField = new TextField("")
             {
                 X = 20, Y = Pos.Top(engineConsumpLabel), Width = Dim.Percent(50),
@@ -87,7 +87,7 @@ namespace App
             };
             this.Add(engineConsumpLabel, engineConsumpField);
 
-            Label pricePerDayLabel = new Label(2, 17, "Price per day:");
+            Label pricePerDayLabel = new Label(2, 8, "Price per day:");
             pricePerDayField = new TextField("")
             {
                 X = 20, Y = Pos.Top(pricePerDayLabel), Width = Dim.Percent(50),
@@ -99,14 +99,14 @@ namespace App
             };
             this.Add(pricePerDayLabel, pricePerDayField, uahLabel);
 
-            Label conditionerLabel = new Label(2, 19, "Conditioner:");
+            Label conditionerLabel = new Label(2, 9, "Conditioner:");
             conditioner = new CheckBox()
             {
                 X = 20, Y = Pos.Top(conditionerLabel)
             };
             this.Add(conditionerLabel, conditioner);
             
-            Label categoryLabel = new Label(2, 21, "Category:");
+            Label categoryLabel = new Label(2, 10, "Category:");
             category = new TextField("")
             {
                 X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(50),
@@ -114,13 +114,13 @@ namespace App
             };
             this.Add(categoryLabel, category);
 
-            delete = new Button(2, 22, "Delete");
+            delete = new Button(2, 12, "Delete");
             delete.Clicked += OnDeleteCar;
-            edit = new Button(2, 23, "Edit");
+            edit = new Button(2, 13, "Edit");
             edit.Clicked += OnEditCar;
-            rent = new Button(2, 24, "Rent car");
+            rent = new Button(2, 14, "Rent car");
             rent.Clicked += OnRentCar;
-            viewRents = new Button(2, 25, "View all rents");
+            viewRents = new Button(2, 15, "View all rents");
             viewRents.Clicked += OnShowRents;
             this.Add(delete, edit, rent, viewRents);
         }
@@ -147,7 +147,7 @@ namespace App
                 Car updatedCar = dialog.GetCar();
                 updatedCar.id = carToShow.id;
                 this.updated = true;
-                SetCar(updatedCar);
+                SetInfo(updatedCar, service, user);
             }
         }
         private void OnRentCar()
@@ -160,12 +160,16 @@ namespace App
             dialog.SetInfo(user, service, carToShow.id);
             Application.Run(dialog);
         }
-        private void OnSubscribe()
+        public void SetInfo(Car car, Service service, UserState user)
         {
-            
-        }
-        public void SetCar(Car car)
-        {
+            this.service = service;
+            this.user = user;
+            if(user.User == null || !user.User.is_worker)
+            {
+                delete.Visible = false;
+                edit.Visible = false;
+                viewRents.Visible = false;
+            }
             this.carToShow = car;
             this.idField.Text = car.id.ToString();
             this.fullnameField.Text = car.fullname;
@@ -176,20 +180,6 @@ namespace App
             this.locationField.Text = car.location;
             this.pricePerDayField.Text = car.price_per_day.ToString();
             this.conditioner.Checked = car.conditioner;
-        }
-        public void SetService(Service service)
-        {
-            this.service = service;
-        }
-        public void SetUser(UserState user)
-        {
-            this.user = user;
-            if(!user.User.isWorker)
-            {
-                delete.Visible = false;
-                edit.Visible = false;
-                viewRents.Visible = false;
-            }
         }
         private void DialogCanceled()
         {

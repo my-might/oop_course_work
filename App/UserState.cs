@@ -1,6 +1,7 @@
 using ClassLib;
 using System;
 using Terminal.Gui;
+using System.Linq;
 
 namespace App
 {
@@ -95,6 +96,7 @@ namespace App
         public override void RentCar(Car car)
         {
             RentDatesDialog datesDialog = new RentDatesDialog();
+            datesDialog.SetInfo(service, car.id, user.User);
             Application.Run(datesDialog);
             if(datesDialog.canceled)
             {
@@ -116,7 +118,6 @@ namespace App
                 return;
             }
             rent.action_time = DateTime.Now;
-            rent.car_id = car.id;
             rent.client_id = user.User.id;
             try
             {
@@ -126,9 +127,17 @@ namespace App
             {
                 MessageBox.ErrorQuery("Error", $"{ex.Message}",  "OK");
             }
+            result.rent = rent;
             ReceiptDialog receiptDialog = new ReceiptDialog();
-            receiptDialog.SetInfo(result, car);
+            receiptDialog.SetInfo(result, car, user);
             Application.Run(receiptDialog);
+
+            if(!user.User.vip && service.rentProxy.GetByUserId(user.User.id).Where(u => u.is_deleted != true).ToList().Count > 3)
+            {
+                user.User.vip = true;
+                service.userProxy.Update(user.User);
+                MessageBox.Query("Congratulations!", "You were successfully promoted to vip user!", "Thanks!");
+            }
         }
     }
 
@@ -140,7 +149,8 @@ namespace App
             this.service = service;
             this.user = user;
         }
-        public override User SignIn() {
+        public override User SignIn() 
+        {
             LoginDialog dialog = new LoginDialog();
             dialog.SetRepository(service.userProxy);
             Application.Run(dialog);

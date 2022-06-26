@@ -76,5 +76,6 @@ namespace App
         public bool confirmed;
         public string conditions;
         public double totalPrice;
+        public Rent rent;
     }
 }

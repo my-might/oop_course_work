@@ -10,9 +10,9 @@ namespace App
         private static UserState user;
         private static Toplevel top;
         
-        public static void SetService(Service repo1)
+        public static void SetService(Service service1)
         {
-            service = repo1;
+            service = service1;
         }
         public static void ProcessApplication()
         {
@@ -27,11 +27,10 @@ namespace App
                 new MenuBarItem ("_File", new MenuItem [] {
                     new MenuItem ("_Sign in", "", user.SignIn),
                     new MenuItem ("_Sign up", "", user.SignUp),
-                    new MenuItem ("_Log out", "", user.LogOut),
                     new MenuItem ("_Exit", "", OnQuit)
                 }),
-                new MenuBarItem ("_Help", new MenuItem [] {
-                    new MenuItem ("_About!", "", Help)
+                new MenuBarItem ("_Contacts", new MenuItem [] {
+                    new MenuItem ("_About us!", "", About)
                 })
             });
             MainWindowUser userWin = new MainWindowUser();
@@ -44,8 +43,10 @@ namespace App
         {
             Application.RequestStop();
         }
-        public static void Help() {
-
+        public static void About() 
+        {
+            AboutDialog dialog = new AboutDialog();
+            Application.Run(dialog);
         }
     }
 }

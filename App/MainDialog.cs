@@ -35,19 +35,19 @@ namespace App
             profile.Clicked += ClickShowProfile;
             Button viewCars = new Button("Search for cars")
             {
-                X = Pos.Center() + 5, Y = 10
+                X = Pos.Center(), Y = 10
             };
             viewCars.Clicked += ClickShowCars;
 
             createCar = new Button("Create car")
             {
-                X = Pos.Center() + 5, Y = 12
+                X = Pos.Center(), Y = 12
             };
             createCar.Clicked += ClickCreateCar;
         
             promoteUser = new Button("Promote user")
             {
-                X = Pos.Center() + 5, Y = 14
+                X = Pos.Center(), Y = 14
             };
             promoteUser.Clicked += ClickPromoteUser;
 
@@ -74,8 +74,10 @@ namespace App
             {
                 profile.Visible = false;
                 logOut.Visible = false;
+                createCar.Visible = false;
+                promoteUser.Visible = false;
             }
-            else if(!user.User.isWorker)
+            else if(!user.User.is_worker)
             {
                 loggedUser.Text = "You are successfully logged as user.";
                 createCar.Visible = false;
@@ -104,14 +106,8 @@ namespace App
             if(!dialog.canceled)
             {
                 ShowCarDialog carDialog = new ShowCarDialog();
-                carDialog.SetService(service);
-                carDialog.SetCar(dialog.GetCar());
-                carDialog.SetUser(user);
+                carDialog.SetInfo(dialog.GetCar(), service, user);
                 Application.Run(carDialog);
-                if(carDialog.deleted)
-                {
-                    //repo.reviewRepository.DeleteByFilmId(film.id);
-                }
             }
         }
         private void ClickShowProfile()
@@ -122,9 +118,11 @@ namespace App
         }
         private void ClickShowCars()
         {
+            CarParametersDialog parametersDialog = new CarParametersDialog();
+            parametersDialog.SetRepository(service);
+            Application.Run(parametersDialog);
             ShowAllCarsDialog dialog = new ShowAllCarsDialog();
-            dialog.SetRepository(service);
-            dialog.SetUser(user);
+            dialog.SetInfo(service, user, parametersDialog.GetParams());
             Application.Run(dialog);
         }
         public void SetService(Service service)

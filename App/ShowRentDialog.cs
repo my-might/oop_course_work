@@ -120,7 +120,7 @@ namespace App
             this.clientUsername.Text = rent.client.fullname;
             this.fromDate.Date = rent.from_date.Date;
             this.toDate.Date = rent.to_date.Date;
-            this.isDeleted.Checked = rent.isDeleted;
+            this.isDeleted.Checked = rent.is_deleted;
             if(user.User.id != rent.client_id)
             {
                 delete.Visible = false;
@@ -128,7 +128,7 @@ namespace App
         }
         private void OnDeleteRent()
         {
-            if(rentToShow.isDeleted)
+            if(rentToShow.is_deleted)
             {
                 MessageBox.Query("Cancel rent", "Rent is already canceled", "OK");
                 return;
@@ -136,8 +136,10 @@ namespace App
             int index = MessageBox.Query("Cancel rent", "Are you sure?", "No", "Yes");
             if(index == 1)
             {
-                rentToShow.isDeleted = true;
+                rentToShow.is_deleted = true;
                 service.rentProxy.Update(rentToShow);
+                RentManager rentManager = new RentManager();
+                rentManager.RentModification(rentToShow.car_id, rentToShow.from_date, rentToShow.to_date);
                 this.deleted = true;
                 Application.RequestStop();
             }

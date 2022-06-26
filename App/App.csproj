@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspose.PDF" Version="22.5.0" />
     <PackageReference Include="Terminal.Gui" Version="1.6.4" />
   </ItemGroup>
 

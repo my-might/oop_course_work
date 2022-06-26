@@ -43,7 +43,7 @@ namespace App
             {
                 X = Pos.Center(), Y = 9
             };
-            password = new TextField()
+            password = new TextField("")
             {
                 X = Pos.Center(), Y = Pos.Bottom(passwordLabel), Width = Dim.Percent(50),
                 Secret = true
@@ -52,19 +52,36 @@ namespace App
         }
         private void DialogSubmit()
         {
-            try
+            string errorText = "";
+            if(login.Text.ToString() == "" || password.Text.ToString() == "")
             {
-                loggedClient = clientProxy.GetByLogin(login.Text.ToString());
-                if(loggedClient.password != password.Text.ToString()) {
-                    throw new Exception("Wrong login or password");
+                errorText = "You have to fill all fields first.";
+            }
+            else
+            {
+                try
+                {
+                    loggedClient = clientProxy.GetByLogin(login.Text.ToString());
+                    if(loggedClient.password != password.Text.ToString()) {
+                        throw new Exception("Wrong login or password");
+                    }
+                    MessageBox.Query("Log in", "You have logged in successfully!", "OK");
+                    this.canceled = false;
+                    Application.RequestStop();
                 }
-                MessageBox.Query("Log in", "You have logged in successfully!", "OK");
+                catch(Exception ex)
+                {
+                    errorText = ex.Message;
+                }
+            }
+            if(errorText != "")
+            {
+                MessageBox.ErrorQuery("Error", errorText, "OK");
+            }
+            else
+            {
                 this.canceled = false;
                 Application.RequestStop();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.ErrorQuery("Error", ex.Message,  "OK");
             }
         }
         public User GetClient()

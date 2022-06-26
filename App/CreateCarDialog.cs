@@ -32,63 +32,63 @@ namespace App
             Label fullnameLabel = new Label(2, 2, "Fullname:");
             inputFullname = new TextField("")
             {
-                X = 20, Y = Pos.Top(fullnameLabel), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(fullnameLabel), Width = Dim.Percent(40)
             };
             this.Add(fullnameLabel, inputFullname);
 
-            Label typeLabel = new Label(2, 4, "Type:");
+            Label typeLabel = new Label(2, 3, "Type:");
             inputType = new TextField("")
             {
-                X = 20, Y = Pos.Top(typeLabel), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(typeLabel), Width = Dim.Percent(40)
             };
             this.Add(typeLabel, inputType);
 
-            Label colorLabel = new Label(2, 6, "Color:");
+            Label colorLabel = new Label(2, 4, "Color:");
             inputColor = new TextField("")
             {
-                X = 20, Y = Pos.Top(colorLabel), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(colorLabel), Width = Dim.Percent(40)
             };
             this.Add(colorLabel, inputColor);
 
-            Label locationLabel = new Label(2, 10, "Location:");
+            Label locationLabel = new Label(2, 5, "Location:");
             inputLocation = new TextField("")
             {
-                X = 20, Y = Pos.Top(locationLabel), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(locationLabel), Width = Dim.Percent(40)
             };
             this.Add(locationLabel, inputLocation);
 
-            Label enginePowerLabel = new Label(2, 13, "Engine power:");
+            Label enginePowerLabel = new Label(2, 6, "Engine power:");
             inputEnginePower = new TextField("")
             {
-                X = 20, Y = Pos.Top(enginePowerLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(enginePowerLabel), Width = Dim.Percent(40),
             };
             this.Add(enginePowerLabel, inputEnginePower);
 
-            Label engineConsumpLabel = new Label(2, 15, "Engine consumption:");
+            Label engineConsumpLabel = new Label(2, 7, "Engine consumption:");
             inputEngineConsump = new TextField("")
             {
-                X = 20, Y = Pos.Top(engineConsumpLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(engineConsumpLabel), Width = Dim.Percent(40),
             };
             this.Add(engineConsumpLabel, inputEngineConsump);
 
-            Label pricePerDayLabel = new Label(2, 17, "Price per day:");
+            Label pricePerDayLabel = new Label(2, 8, "Price per day:");
             inputPricePerDay = new TextField("")
             {
-                X = 20, Y = Pos.Top(pricePerDayLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(pricePerDayLabel), Width = Dim.Percent(40),
             };
             this.Add(pricePerDayLabel, inputPricePerDay);
 
-            Label conditionerLabel = new Label(2, 19, "Conditioner:");
+            Label conditionerLabel = new Label(2, 9, "Conditioner:");
             inputConditioner = new CheckBox()
             {
                 X = 20, Y = Pos.Top(conditionerLabel)
             };
             this.Add(conditionerLabel, inputConditioner);
 
-            Label categoryLabel = new Label(2, 21, "Category:");
+            Label categoryLabel = new Label(2, 10, "Category:");
             inputCategory = new TextField("")
             {
-                X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(40),
             };
             this.Add(categoryLabel, inputCategory);
         }

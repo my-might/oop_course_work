@@ -16,6 +16,11 @@ namespace ClassLib
         public string fullname { get; set; }
         public string category { get; set; }
         public List<Rent> rents { get; set; }
+        
+        public override string ToString()
+        {
+            return string.Format($"[{this.id}] {this.fullname}, {this.price_per_day.ToString()} UAH");
+        }
     }
 
     public class CarParams

@@ -9,6 +9,7 @@ namespace App
         private Car car;
         private RadioGroup receiptType;
         private TextField directory;
+        private UserState user;
         public ReceiptDialog()
         {
             this.Title = "Rent receipt";
@@ -56,10 +57,11 @@ namespace App
                 directory.Text = "not selected.";
             }
         }
-        public void SetInfo(RentData data, Car car)
+        public void SetInfo(RentData data, Car car, UserState user)
         {
             this.data = data;
             this.car = car;
+            this.user = user;
         }
         private void DialogSubmit()
         {
@@ -77,7 +79,7 @@ namespace App
                 Strategy strategy;
                 if(receiptType.SelectedItem == 0) { strategy = new PDFStrategy(); }
                 else { strategy = new DOCStrategy(); }
-                Receipt receipt = new Receipt(data, car, strategy, directory.Text.ToString());
+                Receipt receipt = new Receipt(data, car, user, strategy, directory.Text.ToString());
                 receipt.CreateReceipt();
             }
             if(errorText != "")
