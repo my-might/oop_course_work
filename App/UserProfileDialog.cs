@@ -26,76 +26,76 @@ namespace App
             ok.Clicked += DialogCanceled;
             this.AddButton(ok);
 
-            Label loginLabel = new Label(2, 2, "Login:");
+            Label loginLabel = new Label(2, 1, "Login:");
             login = new TextField("")
             {
-                X = 20, Y = Pos.Top(loginLabel), Width = Dim.Percent(50),
+                X = 25, Y = Pos.Top(loginLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(loginLabel, login);
 
-            Label passwordLabel = new Label(2, 4, "Password:");
+            Label passwordLabel = new Label(2, 2, "Password:");
             password = new TextField("")
             {
-                X = 20, Y = Pos.Top(loginLabel), Width = Dim.Percent(50),
+                X = 25, Y = Pos.Top(passwordLabel), Width = Dim.Percent(40),
                 ReadOnly = true, Secret = true
             };
             this.Add(passwordLabel, password);
             showPassword = new Button("show")
             {
-                X = 30, Y = Pos.Top(loginLabel)
+                X = 50, Y = Pos.Top(passwordLabel)
             };
             showPassword.Clicked += ClickShowPassword;
 
 
-            Label fullnameLabel = new Label(2, 6, "Fullname:");
+            Label fullnameLabel = new Label(2, 3, "Fullname:");
             fullname = new TextField("")
             {
-                X = 20, Y = Pos.Top(fullnameLabel), Width = Dim.Percent(50),
+                X = 25, Y = Pos.Top(fullnameLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(fullnameLabel, fullname);
 
-            Label ageLabel = new Label(2, 8, "Age:");
+            Label ageLabel = new Label(2, 4, "Age:");
             age = new TextField("")
             {
-                X = 20, Y = Pos.Top(ageLabel), Width = Dim.Percent(50),
+                X = 25, Y = Pos.Top(ageLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(ageLabel, age);
 
-            Label emailLabel = new Label(2, 10, "Email:");
+            Label emailLabel = new Label(2, 5, "Email:");
             email = new TextField("")
             {
-                X = 20, Y = Pos.Top(emailLabel), Width = Dim.Percent(50),
+                X = 25, Y = Pos.Top(emailLabel), Width = Dim.Percent(45),
                 ReadOnly = true
             };
             this.Add(emailLabel, email);
 
-            Label licenseLabel = new Label(2, 12, "Driver license number:");
+            Label licenseLabel = new Label(2, 6, "Driver license number:");
             driverLicenseNum = new TextField("")
             {
-                X = 20, Y = Pos.Top(licenseLabel), Width = Dim.Percent(50),
+                X = 25, Y = Pos.Top(licenseLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(licenseLabel, driverLicenseNum);
 
-            Label categoryLabel = new Label(2, 14, "Category:");
+            Label categoryLabel = new Label(2, 7, "Category:");
             category = new TextField("")
             {
-                X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(50),
+                X = 25, Y = Pos.Top(categoryLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(categoryLabel, category);
 
-            Label vipLabel = new Label(2, 16, "Vip:");
+            Label vipLabel = new Label(2, 8, "Vip:");
             vip = new CheckBox()
             {
-                X = 20, Y = Pos.Top(vipLabel), Width = Dim.Percent(50)
+                X = 25, Y = Pos.Top(vipLabel), Width = Dim.Percent(40)
             };
             this.Add(vipLabel, vip);
 
-            Label rentsLabel = new Label(2, 18, "My rents");
+            Label rentsLabel = new Label(2, 10, "My rents");
             rents = new ListView()
             {
                 Width = Dim.Fill(), Height = Dim.Fill()
@@ -104,7 +104,7 @@ namespace App
 
             FrameView frameView = new FrameView("")
             {
-                X = 20, Y = Pos.Top(rentsLabel),
+                X = 25, Y = Pos.Top(rentsLabel),
                 Width = Dim.Percent(50),
                 Height = 5
             };
@@ -149,6 +149,8 @@ namespace App
             try
             {
                 currentRent = (Rent)args.Value;
+                currentRent.car = service.carProxy.GetById(currentRent.car_id);
+                currentRent.client = service.userProxy.GetById(currentRent.client_id);
             }
             catch
             {

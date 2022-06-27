@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace ClassLib
 {
@@ -14,6 +15,7 @@ namespace ClassLib
         public string password { get; set; }
         public bool is_worker { get; set; }
         public bool vip { get; set; }
+        [XmlIgnore]
         public List<Rent> rents { get; set; }
     }
 }

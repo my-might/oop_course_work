@@ -25,7 +25,11 @@ namespace ClassLib
 
         public override void DeleteById(int id)
         {
-            if(rentRepo.GetById(id) == null)
+            try
+            {
+                rentRepo.GetById(id);
+            }
+            catch
             {
                 throw new Exception("Rent with entered id does not exist.");
             }
@@ -34,8 +38,12 @@ namespace ClassLib
 
         public override Rent GetById(int id)
         {
-            Rent result = rentRepo.GetById(id);
-            if(result == null)
+            Rent result = new Rent();
+            try
+            {
+                result = rentRepo.GetById(id);
+            }
+            catch
             {
                 throw new Exception("Rent with entered id does not exist.");
             }
@@ -44,11 +52,19 @@ namespace ClassLib
 
         public override int Insert(Rent rent)
         {
-            if(carProxy.GetById(rent.car_id) == null)
+            try
+            {
+                carProxy.GetById(rent.car_id);
+            }
+            catch
             {
                 throw new Exception("Car with entered id does not exist");
             }
-            if(userProxy.GetById(rent.client_id) == null)
+            try
+            {
+                userProxy.GetById(rent.client_id);
+            }
+            catch
             {
                 throw new Exception("User with entered id does not exist.");
             }
@@ -66,7 +82,15 @@ namespace ClassLib
 
         public override void Update(Rent rent)
         {
-            Rent existing = rentRepo.GetById(rent.id);
+            Rent existing = new Rent();
+            try
+            {
+                existing = rentRepo.GetById(rent.id);
+            }
+            catch
+            {
+                throw new Exception("Rent with entered id does not exist.");
+            }
             if(rent.car_id != existing.car_id || rent.client_id != existing.client_id
                 || rent.from_date != existing.from_date || rent.to_date != existing.to_date
                 || rent.action_time != existing.action_time)
@@ -77,7 +101,11 @@ namespace ClassLib
         }
         public override List<Rent> GetByCarId(int carId)
         {
-            if(carProxy.GetById(carId) == null)
+            try
+            {
+                carProxy.GetById(carId);
+            }
+            catch
             {
                 throw new Exception("Car with entered id does not exist");
             }
@@ -86,7 +114,11 @@ namespace ClassLib
         }
         public override List<Rent> GetByUserId(int userId)
         {
-            if(userProxy.GetById(userId) == null)
+            try
+            {
+                userProxy.GetById(userId);
+            }
+            catch
             {
                 throw new Exception("User with entered id does not exist.");
             }
@@ -95,7 +127,11 @@ namespace ClassLib
         }
         public override bool IsAvailableForDates(DateTime fromDate, DateTime toDate, int carId)
         {
-            if(carProxy.GetById(carId) == null)
+            try
+            {
+                carProxy.GetById(carId);
+            }
+            catch
             {
                 throw new Exception("Car with entered id does not exist");
             }

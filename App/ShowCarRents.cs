@@ -40,6 +40,8 @@ namespace App
             try
             {
                 rent = (Rent)args.Value; 
+                rent.car = service.carProxy.GetById(rent.car_id);
+                rent.client = service.userProxy.GetById(rent.client_id);
             }
             catch
             {

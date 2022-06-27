@@ -8,10 +8,7 @@ namespace ClassLib
         static void Main(string[] args)
         {
             Service service = new Service();
-            CarParams parameters = new CarParams();
-            parameters.fromDate = new DateTime(2001, 01, 01);
-            parameters.todate = new DateTime(2001, 01, 01);
-            Console.WriteLine(service.carProxy.GetSearchPagesCount("", parameters));
+            Console.WriteLine(service.carProxy.GetAllColors().Count.ToString());
         }
     }
 }

@@ -127,7 +127,7 @@ namespace App
             }
             else
             {
-                Car toInsert = new Car{
+                car = new Car{
                     type = inputType.Text.ToString(),
                     color = inputColor.Text.ToString(),
                     location = inputLocation.Text.ToString(),
@@ -138,15 +138,6 @@ namespace App
                     fullname = inputFullname.Text.ToString(),
                     conditioner = inputConditioner.Checked
                 };
-                try
-                {
-                    int result = service.carProxy.Insert(toInsert);
-                    MessageBox.Query("Inserted", $"Car was successfully inserted with id {result}", "OK");
-                }
-                catch(Exception ex)
-                {
-                    errorText = ex.Message;
-                }
             }
             if(errorText != "")
             {

@@ -106,7 +106,14 @@ namespace App
             this.service = service;
             this.user = user;
             this.carParams = carParams;
-            ShowCurrentPage();
+            try
+            {
+                ShowCurrentPage();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.ErrorQuery("Error", ex.Message, "OK");
+            }
         }
         private void ClickPrevPage()
         {

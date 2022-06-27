@@ -1,6 +1,6 @@
 using Terminal.Gui;
-using System.Collections.Generic;
 using ClassLib;
+using System;
 
 namespace App
 {
@@ -34,7 +34,7 @@ namespace App
             Label idLabel = new Label(2, 1, "ID:");
             idField = new TextField("")
             {
-                X = 20, Y = Pos.Top(idLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(idLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(idLabel, idField);
@@ -42,7 +42,7 @@ namespace App
             Label fullnameLabel = new Label(2, 2, "Fullname:");
             fullnameField = new TextField("")
             {
-                X = 20, Y = Pos.Top(fullnameLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(fullnameLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(fullnameLabel, fullnameField);
@@ -50,7 +50,7 @@ namespace App
             Label typeLabel = new Label(2, 3, "Type:");
             typeField = new TextField("")
             {
-                X = 20, Y = Pos.Top(typeLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(typeLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(typeLabel, typeField);
@@ -58,7 +58,7 @@ namespace App
             Label colorLabel = new Label(2, 4, "Color:");
             colorfield = new TextField("")
             {
-                X = 20, Y = Pos.Top(colorLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(colorLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(colorLabel, colorfield);
@@ -66,7 +66,7 @@ namespace App
             Label locationLabel = new Label(2, 5, "Location:");
             locationField = new TextField("")
             {
-                X = 20, Y = Pos.Top(locationLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(locationLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(locationLabel, locationField);
@@ -74,7 +74,7 @@ namespace App
             Label enginePowerLabel = new Label(2, 6, "Engine power:");
             enginePowerField = new TextField("")
             {
-                X = 20, Y = Pos.Top(enginePowerLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(enginePowerLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(enginePowerLabel, enginePowerField);
@@ -82,7 +82,7 @@ namespace App
             Label engineConsumpLabel = new Label(2, 7, "Engine consumption:");
             engineConsumpField = new TextField("")
             {
-                X = 20, Y = Pos.Top(engineConsumpLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(engineConsumpLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(engineConsumpLabel, engineConsumpField);
@@ -90,12 +90,12 @@ namespace App
             Label pricePerDayLabel = new Label(2, 8, "Price per day:");
             pricePerDayField = new TextField("")
             {
-                X = 20, Y = Pos.Top(pricePerDayLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(pricePerDayLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             Label uahLabel = new Label("UAH")
             {
-                X = Pos.Right(pricePerDayField) + 5, Y = Pos.Top(pricePerDayLabel)
+                X = Pos.Right(pricePerDayField) + 3, Y = Pos.Top(pricePerDayLabel)
             };
             this.Add(pricePerDayLabel, pricePerDayField, uahLabel);
 
@@ -109,7 +109,7 @@ namespace App
             Label categoryLabel = new Label(2, 10, "Category:");
             category = new TextField("")
             {
-                X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(50),
+                X = 20, Y = Pos.Top(categoryLabel), Width = Dim.Percent(40),
                 ReadOnly = true
             };
             this.Add(categoryLabel, category);
@@ -143,11 +143,21 @@ namespace App
 
             if(!dialog.canceled)
             {
-                MessageBox.Query("Edit", "Car was updated!", "OK");
-                Car updatedCar = dialog.GetCar();
-                updatedCar.id = carToShow.id;
+                Car carToUpdate = new Car();
+                try
+                {
+                    carToUpdate = dialog.GetCar();
+                    carToUpdate.id = carToShow.id;
+                    service.carProxy.Update(carToUpdate);
+                    MessageBox.Query("Edit", "Car was updated!", "OK");
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.ErrorQuery("Error", ex.Message, "OK");
+                    return;
+                }
                 this.updated = true;
-                SetInfo(updatedCar, service, user);
+                SetInfo(carToUpdate, service, user);
             }
         }
         private void OnRentCar()
@@ -176,10 +186,11 @@ namespace App
             this.colorfield.Text = car.color;
             this.typeField.Text = car.type;
             this.enginePowerField.Text = car.engine_power.ToString();
-            this.engineConsumpField.Text = car.engine_fuel_consumption.ToString();
+            this.engineConsumpField.Text = car.engine_fuel_consumption.ToString().Substring(0, 2);
             this.locationField.Text = car.location;
             this.pricePerDayField.Text = car.price_per_day.ToString();
             this.conditioner.Checked = car.conditioner;
+            this.category.Text = car.category;
         }
         private void DialogCanceled()
         {

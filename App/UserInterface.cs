@@ -22,7 +22,9 @@ namespace App
         }
         public static void ProcessMain()
         {
-            user = new UserState(service);
+            MainWindowUser userWin = new MainWindowUser();
+            userWin.SetService(service);
+            user = new UserState(service, userWin);
             MenuBar menu = new MenuBar(new MenuBarItem[] {
                 new MenuBarItem ("_File", new MenuItem [] {
                     new MenuItem ("_Sign in", "", user.SignIn),
@@ -33,8 +35,6 @@ namespace App
                     new MenuItem ("_About us!", "", About)
                 })
             });
-            MainWindowUser userWin = new MainWindowUser();
-            userWin.SetService(service);
             userWin.SetUser(user);
             top.Add(userWin, menu);
             Application.Run();

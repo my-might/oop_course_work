@@ -17,7 +17,6 @@ namespace App
         protected TextField enginePower;
         protected DateField fromDate;
         protected DateField toDate; 
-        private List<Car> searched;
         private CarParams paramsToSearch;
         public CarParametersDialog()
         {
@@ -32,21 +31,21 @@ namespace App
             Label carColor = new Label(2, 2, "Color:");
             color = new ComboBox("not selected")
             {
-                X = 20, Y = Pos.Top(carColor), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(carColor), Width = Dim.Percent(50), Height = Dim.Percent(30)
             };
             this.Add(carColor, color);
 
             Label carType = new Label(2, 4, "Type:");
             type = new ComboBox("not selected")
             {
-                X = 20, Y = Pos.Top(carType), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(carType), Width = Dim.Percent(50), Height = Dim.Percent(30)
             };
             this.Add(carType, type);
 
             Label carLocation = new Label(2, 6, "Location:");
             location = new ComboBox("not selected")
             {
-                X = 20, Y = Pos.Top(carLocation), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(carLocation), Width = Dim.Percent(50), Height = Dim.Percent(30)
             };
             this.Add(carLocation, location);
 
@@ -77,11 +76,11 @@ namespace App
             };
             fromDate = new DateField()
             {
-                X = Pos.Percent(50) - 10, Y = 14, Width = Dim.Percent(20), IsShortFormat = true
+                X = Pos.Percent(50) - 13, Y = 14
             };
             toDate = new DateField()
             {
-                X = Pos.Percent(50) + 10, Y = 14, Width = Dim.Percent(20), IsShortFormat = true
+                X = Pos.Percent(50) + 10, Y = 14
             };
             this.Add(date, fromDate, toDate);
         }
@@ -118,11 +117,11 @@ namespace App
             {
                 errorText = "Max price must be positive integer.";
             }
-            else if(fromDate.Date != new DateTime(2001, 01, 01) && (!DateTime.TryParse(fromDate.Text.ToString(), out paramsToSearch.fromDate) || paramsToSearch.fromDate < DateTime.Now.Date))
+            else if(fromDate.Date != new DateTime() && (!DateTime.TryParse(fromDate.Text.ToString(), out paramsToSearch.fromDate) || paramsToSearch.fromDate < DateTime.Now.Date))
             {
                 errorText = "From date must be in date format and bigger than today`s date.";
             }
-            else if(toDate.Date != new DateTime(2001, 01, 01) && (!DateTime.TryParse(toDate.Text.ToString(), out paramsToSearch.todate) || paramsToSearch.todate < DateTime.Now.Date))
+            else if(toDate.Date != new DateTime() && (!DateTime.TryParse(toDate.Text.ToString(), out paramsToSearch.todate) || paramsToSearch.todate < DateTime.Now.Date))
             {
                 errorText = "To date must be in date format and bigger than today`s date.";
             }

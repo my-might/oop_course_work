@@ -1,5 +1,6 @@
 using Terminal.Gui;
 using ClassLib;
+using System;
 
 namespace App
 {
@@ -30,7 +31,7 @@ namespace App
 
             profile = new Button("My profile")
             {
-                X = Pos.Center() - 20, Y = 9
+                X = Pos.Center(), Y = 8
             };
             profile.Clicked += ClickShowProfile;
             Button viewCars = new Button("Search for cars")
@@ -72,6 +73,7 @@ namespace App
             this.user = user;
             if(user.User == null)
             {
+                loggedUser.Text = "";
                 profile.Visible = false;
                 logOut.Visible = false;
                 createCar.Visible = false;
@@ -82,10 +84,16 @@ namespace App
                 loggedUser.Text = "You are successfully logged as user.";
                 createCar.Visible = false;
                 promoteUser.Visible = false;
+                profile.Visible = true;
+                logOut.Visible = true;
             }
             else
             {
                 loggedUser.Text = "You are successfully logged as worker.";
+                profile.Visible = true;
+                logOut.Visible = true;
+                createCar.Visible = true;
+                promoteUser.Visible = true;
             }
         }
         private void OnLogOut()
@@ -105,6 +113,16 @@ namespace App
             Application.Run(dialog);
             if(!dialog.canceled)
             {
+                try
+                {
+                    int result = service.carProxy.Insert(dialog.GetCar());
+                    MessageBox.Query("Inserted", $"Car was successfully inserted with id {result}", "OK");
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.ErrorQuery("Error", ex.Message, "OK");
+                    return;
+                }
                 ShowCarDialog carDialog = new ShowCarDialog();
                 carDialog.SetInfo(dialog.GetCar(), service, user);
                 Application.Run(carDialog);
@@ -121,6 +139,10 @@ namespace App
             CarParametersDialog parametersDialog = new CarParametersDialog();
             parametersDialog.SetRepository(service);
             Application.Run(parametersDialog);
+            if(parametersDialog.canceled)
+            {
+                return;
+            }
             ShowAllCarsDialog dialog = new ShowAllCarsDialog();
             dialog.SetInfo(service, user, parametersDialog.GetParams());
             Application.Run(dialog);

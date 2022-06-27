@@ -38,6 +38,7 @@ namespace App
                 X = Pos.Center(), Y = Pos.Bottom(openDirectory) + 1, Width = Dim.Fill() - 4,
                 ReadOnly = true
             };
+            this.Add(filePathLabel, openDirectory, directory);
         }
         private void SelectDirectory()
         {

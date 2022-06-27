@@ -47,7 +47,7 @@ namespace App
         }
         protected override void Conditions()
         {
-            string conditions = "In the event of an accident, insurance is paid in half\nRent can be canceled no later than one day before the date of issue of the car";
+            string conditions = "In the event of an accident, insurance is paid in half.\nRent can be canceled no later than one day before the date of issue of the car.";
             this.data.conditions = conditions;
         }
     }
@@ -66,7 +66,7 @@ namespace App
         }
         protected override void Conditions()
         {
-            string conditions = "In the event of an accident, insurance is paid fully by client\nRent can be canceled no later than three days before the date of issue of the car";
+            string conditions = "In the event of an accident, insurance is paid fully by client.\nRent can be canceled no later than three days before the date of issue of the car.";
             this.data.conditions = conditions;
         }   
     }

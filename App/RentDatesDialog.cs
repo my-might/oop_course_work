@@ -24,19 +24,17 @@ namespace App
             this.AddButton(cancel);
 
             
-            Label fromDateLabel = new Label(2, 14, "From date:");
+            Label fromDateLabel = new Label(10, 5, "From date:");
             fromDate = new DateField()
             {
-                X = 20, Y = Pos.Top(fromDateLabel), Width = Dim.Percent(30),
-                IsShortFormat = true, ReadOnly = true
+                X = Pos.Center(), Y = Pos.Top(fromDateLabel)
             };
             this.Add(fromDateLabel, fromDate);
 
-            Label toDateLabel = new Label(2, 16, "To date:");
+            Label toDateLabel = new Label(10, 7, "To date:");
             toDate = new DateField()
             {
-                X = 20, Y = Pos.Top(toDateLabel), Width = Dim.Percent(30),
-                IsShortFormat = true, ReadOnly = true
+                X = Pos.Center(), Y = Pos.Top(toDateLabel)
             };
             this.Add(toDateLabel, toDate);
         }
@@ -62,25 +60,20 @@ namespace App
                     to_date = tDate,
                     car_id = carId
                 };
-                try 
-                {
-                    bool isAvailable = service.rentProxy.IsAvailableForDates(frDate, tDate, carId);
+                bool isAvailable = service.rentProxy.IsAvailableForDates(frDate, tDate, carId);
                     if(!isAvailable)
                     {
                         int result = MessageBox.Query("Failed", "Car is not available in entered dates. Do you want to know if it will free?", "Yes", "No");
                         if(result == 0)
                         {
-                            CarRentObserver observer = new CarRentObserver(rentToReturn, user);
+                            rentToReturn.client = user;
+                            CarRentObserver observer = new CarRentObserver(rentToReturn);
                             RentManager rentManager = new RentManager();
                             rentManager.Attach(observer);
                         }
                         return;
                     }
-                }
-                catch(Exception ex)
-                {
-                    errorText = ex.Message;
-                }
+                
             }
             if(errorText != "")
             {

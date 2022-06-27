@@ -74,7 +74,7 @@ namespace App
             };
             this.Add(drLicenseLabel, drLicenseNum);
 
-            Label categoriesLabel = new Label("Categories:")
+            Label categoriesLabel = new Label("Category:")
             {
                 X = Pos.Center(), Y = 11
             };
@@ -118,11 +118,15 @@ namespace App
             {
                 errorText = "You have to fill all fields first.";
             }
+            else if(!int.TryParse(age.Text.ToString(), out int ageParsed))
+            {
+                errorText = "Unavailable age value.";
+            }
             else
             {
                 clientToAdd = new User() {
                     fullname = fullname.Text.ToString(),
-                    age = Int32.Parse(age.Text.ToString()),
+                    age = ageParsed,
                     email = email.Text.ToString(),
                     driver_license_num = drLicenseNum.Text.ToString(),
                     category = categories.Text.ToString(),

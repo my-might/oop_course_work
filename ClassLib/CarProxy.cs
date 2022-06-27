@@ -25,7 +25,11 @@ namespace ClassLib
 
         public override void DeleteById(int id)
         {
-            if(carRepo.GetById(id) == null)
+            try
+            {
+                carRepo.GetById(id);
+            }
+            catch
             {
                 throw new Exception("Car with entered id does not exist.");
             }
@@ -34,8 +38,12 @@ namespace ClassLib
 
         public override Car GetById(int id)
         {
-            Car result = carRepo.GetById(id);
-            if(result == null)
+            Car result = new Car();
+            try
+            {
+                result = carRepo.GetById(id);
+            }
+            catch
             {
                 throw new Exception("Car with entered id does not exist.");
             }
@@ -58,10 +66,14 @@ namespace ClassLib
 
         public override void Update(Car car)
         {
-            Car existing = carRepo.GetById(car.id);
-            if(existing == null)
+            Car existing = new Car();
+            try
             {
-                throw new Exception("Car does not exist.");
+                existing = carRepo.GetById(car.id);
+            }
+            catch
+            {
+                throw new Exception("Car with entered id does not exist.");
             }
             if(car.category.Length != 1)
             {
@@ -82,10 +94,10 @@ namespace ClassLib
         {
             if(parameters.minprice > parameters.maxPrice)
             {
-                throw new Exception("Max price must be bidder than min price");
+                throw new Exception("Max price must be bigger than min price");
             }
-            if((parameters.fromDate != new DateTime(2001, 01, 01) && parameters.todate == new DateTime(2001, 01, 01)) 
-                || (parameters.fromDate == new DateTime(2001, 01, 01) && parameters.todate != new DateTime(2001, 01, 01)))
+            if((parameters.fromDate != new DateTime() && parameters.todate == new DateTime()) 
+                || (parameters.fromDate == new DateTime() && parameters.todate != new DateTime()))
             {
                 throw new Exception("You have to set both dates to search with them.");
             }
@@ -106,8 +118,8 @@ namespace ClassLib
             {
                 throw new Exception("Max price must be bidder than min price");
             }
-            if((parameters.fromDate != new DateTime(2001, 01, 01) && parameters.todate == new DateTime(2001, 01, 01)) 
-                || (parameters.fromDate == new DateTime(2001, 01, 01) && parameters.todate != new DateTime(2001, 01, 01)))
+            if((parameters.fromDate != new DateTime() && parameters.todate == new DateTime()) 
+                || (parameters.fromDate == new DateTime() && parameters.todate != new DateTime()))
             {
                 throw new Exception("You have to set both dates to search with them.");
             }
@@ -124,8 +136,8 @@ namespace ClassLib
             {
                 throw new Exception("Max price must be bidder than min price");
             }
-            if((parameters.fromDate != new DateTime(2001, 01, 01) && parameters.todate == new DateTime(2001, 01, 01)) 
-                || (parameters.fromDate == new DateTime(2001, 01, 01) && parameters.todate != new DateTime(2001, 01, 01)))
+            if((parameters.fromDate != new DateTime() && parameters.todate == new DateTime()) 
+                || (parameters.fromDate == new DateTime() && parameters.todate != new DateTime()))
             {
                 throw new Exception("You have to set both dates to search with them.");
             }

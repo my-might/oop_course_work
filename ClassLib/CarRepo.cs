@@ -63,17 +63,14 @@ namespace ClassLib
         {
             if(parameters.type != "not selected")
             {
-                Console.WriteLine(parameters.type);
                 selectFrom = GetByType(parameters.type, selectFrom);
             }
             if(parameters.color != "not selected")
             {
-                Console.WriteLine(parameters.color);
                 selectFrom = GetByColor(parameters.color, selectFrom);
             }
             if(parameters.location != "not selected")
             {
-                Console.WriteLine(parameters.location);
                 selectFrom = GetByLocation(parameters.location, selectFrom);
             }
             if(parameters.enginePower != 0)
@@ -84,7 +81,7 @@ namespace ClassLib
             {
                 selectFrom = GetByPrice(parameters.minprice, parameters.maxPrice, selectFrom);
             }
-            if(parameters.fromDate != new DateTime(2001, 01, 01))
+            if(parameters.fromDate != new DateTime())
             {
                 selectFrom = GetByDates(parameters.fromDate, parameters.todate, selectFrom);
             }

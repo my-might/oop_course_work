@@ -2,16 +2,22 @@ using ClassLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using System.Net;
 using System.Net.Mail;
 
 namespace App
 {
+    [XmlInclude(typeof(CarRentObserver))]
     public abstract class Observer
     {
-        public User user;
+        [XmlElement("rent")]
         public Rent rent;
-        public Observer(Rent rent, User user)
+        public Observer()
+        {
+            this.rent = new Rent();
+        }
+        public Observer(Rent rent)
         {
             this.rent = rent;
         }
@@ -19,13 +25,17 @@ namespace App
     }
     public class CarRentObserver : Observer
     {
-        public CarRentObserver(Rent rent, User user) : base(rent, user) {}
+        public CarRentObserver(Rent rent) : base(rent) {}
+        public CarRentObserver()
+        {
+            this.rent = new Rent();
+        }
         public override void Update()
         {
             MailMessage message = new MailMessage();  
             SmtpClient smtp = new SmtpClient();  
             message.From = new MailAddress("rent.company@gmail.com");  
-            message.To.Add(new MailAddress(user.email));  
+            message.To.Add(new MailAddress(rent.client.email));  
             message.Subject = "Rent subscription";  
             message.IsBodyHtml = true;
             message.Body = $"<h1>Car with id [{rent.id}] is free for dates from {rent.from_date} to {rent.to_date}!<h1>";  

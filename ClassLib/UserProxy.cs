@@ -23,7 +23,11 @@ namespace ClassLib
 
         public override void DeleteById(int id)
         {
-            if(userRepo.GetById(id) == null)
+            try
+            {
+                userRepo.GetById(id);
+            }
+            catch
             {
                 throw new Exception("User with entered id does not exist.");
             }
@@ -32,8 +36,12 @@ namespace ClassLib
 
         public override User GetById(int id)
         {
-            User result = userRepo.GetById(id);
-            if(result == null)
+            User result = new User();
+            try
+            {
+                result = userRepo.GetById(id);
+            }
+            catch
             {
                 throw new Exception("User with entered id does not exist.");
             }
@@ -46,10 +54,12 @@ namespace ClassLib
             {
                 throw new Exception("Invalid car category format.");
             }
-            if(userRepo.GetByLogin(client.login) != null)
+            try
             {
+                userRepo.GetByLogin(client.login);
                 throw new Exception("User with entered login already exists.");
             }
+            catch {}
             if(client.password.Length < 8)
             {
                 throw new Exception("Password length must be equal or bigger than 8.");
@@ -68,10 +78,15 @@ namespace ClassLib
             {
                 throw new Exception("Invalid car category format.");
             }
-            if(userRepo.GetByLogin(client.login) != null && userRepo.GetByLogin(client.login).id != client.id)
+            try
             {
-                throw new Exception("User with entered login already exists.");
+                User existing = userRepo.GetByLogin(client.login);
+                if(existing.id != client.id)
+                {
+                    throw new Exception("User with entered login already exists.");
+                }
             }
+            catch {}
             if(client.password.Length < 8)
             {
                 throw new Exception("Password length must be equal or bigger than 8.");
@@ -80,8 +95,12 @@ namespace ClassLib
         }
         public override User GetByLogin(string login)
         {
-            User result = userRepo.GetByLogin(login);
-            if(result == null)
+            User result = new User();
+            try
+            {
+                result = userRepo.GetByLogin(login);
+            }
+            catch
             {
                 throw new Exception("User with entered login does not exist.");
             }

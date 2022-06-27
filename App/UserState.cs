@@ -10,6 +10,7 @@ namespace App
         private User user;
         private State state;
         private Service service;
+        private MainWindowUser mainWin;
         public User User
         {
             get { return user; }
@@ -20,16 +21,18 @@ namespace App
             get { return state; }
             set { state = value; }
         }
-        public UserState(Service service) 
+        public UserState(Service service, MainWindowUser mainWin) 
         {
             this.state = new UnauthorizedState(service, this);
             this.service = service;
+            this.mainWin = mainWin;
         }
         public void SignIn() 
         {
             User userSigned = state.SignIn();
             if(userSigned != null) {
                 this.user = userSigned;
+                mainWin.SetUser(this);
             }
         }
         public void SignUp() 
@@ -37,12 +40,14 @@ namespace App
             User userSigned = state.SignUp();
             if(userSigned != null) {
                 this.user = userSigned;
+                mainWin.SetUser(this);
             }
         }
         public void LogOut() 
         {
             state.LogOut();
             user = null;
+            mainWin.SetUser(this);
         }     
         public void RentCar(Car car)
         {
