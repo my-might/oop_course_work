@@ -41,11 +41,6 @@ namespace App
                 ReadOnly = true, Secret = true
             };
             this.Add(passwordLabel, password);
-            showPassword = new Button("show")
-            {
-                X = 50, Y = Pos.Top(passwordLabel)
-            };
-            showPassword.Clicked += ClickShowPassword;
 
 
             Label fullnameLabel = new Label(2, 3, "Fullname:");

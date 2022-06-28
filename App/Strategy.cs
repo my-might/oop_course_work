@@ -114,7 +114,7 @@ namespace App
             textBuilder = new TextBuilder(page);
             textBuilder.AppendText(textFragment8);
 
-            
+            document.Save(destination + @"/Receipt "+ DateTime.Now.ToString().Replace("/", ".")+".pdf");
         }
     }
     public class DOCStrategy : Strategy

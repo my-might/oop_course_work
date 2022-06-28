@@ -52,7 +52,7 @@ namespace App
             Label carEngine = new Label(2, 10, "Engine power:");
             enginePower = new TextField("")
             {
-                X = 20, Y = Pos.Top(carEngine), Width = Dim.Percent(50)
+                X = 20, Y = Pos.Top(carEngine), Width = Dim.Percent(40)
             };
             this.Add(carEngine, enginePower);
 
